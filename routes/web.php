@@ -10,3 +10,7 @@ Route::get('/products', [ProductController::class, 'index'])->name('products.ind
 Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
 Route::get('/categories/{category}', [ProductController::class, 'category'])->name('products.category');
 
+// Prometheus metrics endpoint
+Route::get('/metrics', \App\Http\Controllers\MetricsController::class)
+    ->middleware('throttle:60,1');
+

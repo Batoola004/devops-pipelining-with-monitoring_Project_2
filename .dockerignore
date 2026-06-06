@@ -1,0 +1,61 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# PHP
+vendor/
+
+# Node
+node_modules/
+
+# Frontend build (rebuilt in Docker)
+public/build/
+
+# Environment
+.env
+.env.local
+.env.production
+
+# Logs
+storage/logs/*
+!storage/logs/.gitignore
+
+# Cache
+storage/framework/cache/data/*
+!storage/framework/cache/data/.gitignore
+storage/framework/views/*
+!storage/framework/views/.gitignore
+storage/framework/testing/*
+!storage/framework/testing/.gitignore
+storage/framework/sessions/*
+!storage/framework/sessions/.gitignore
+
+# Tests
+tests/
+
+# Docker
+docker-compose.yml
+docker-entrypoint.sh
+nginx/
+
+# CI
+.github/
+
+# Documentation
+README.md
+phpunit.xml
+
+# Packages
+*.zip
+*.tar.gz
