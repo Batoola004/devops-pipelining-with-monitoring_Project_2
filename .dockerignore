@@ -46,7 +46,6 @@ tests/
 
 # Docker
 docker-compose.yml
-docker-entrypoint.sh
 nginx/
 
 # CI
