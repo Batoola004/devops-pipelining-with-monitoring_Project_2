@@ -16,17 +16,17 @@ class MetricsMiddleware
 
         $response = $next($request);
 
-        $duration = (microtime(true) - $start) * 1000; 
+        $duration = (microtime(true) - $start) * 1000;
 
         
         if (! str_contains($request->path(), 'metrics')) {
-            $this->trackRequest($duration);
+            $this->trackRequest($request, $response, $duration);
         }
 
         return $response;
     }
 
-    private function trackRequest(float $durationMs): void
+    private function trackRequest(Request $request, Response $response, float $durationMs): void
     {
         
         Cache::increment('metrics:request_count');
@@ -34,10 +34,17 @@ class MetricsMiddleware
         
         $count = Cache::get('metrics:request_count', 0);
         $currentAvg = Cache::get('metrics:avg_response_time_ms', 0);
+        $newAvg = $currentAvg + ($durationMs - $currentAvg) / min($count, 1000);
+        Cache::forever('metrics:avg_response_time_ms', round($newAvg, 2));
 
         
-        $newAvg = $currentAvg + ($durationMs - $currentAvg) / min($count, 1000);
+        $method = strtolower($request->method());
+        Cache::increment('metrics:requests_by_method:' . $method);
 
-        Cache::forever('metrics:avg_response_time_ms', round($newAvg, 2));
+        
+        $statusCode = $response->getStatusCode();
+        $statusGroup = (int)($statusCode / 100) . 'xx';
+        Cache::increment('metrics:requests_by_status:' . $statusGroup);
+
     }
 }
