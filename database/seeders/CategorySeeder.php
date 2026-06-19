@@ -10,28 +10,35 @@ class CategorySeeder extends Seeder
 {
     public function run(): void
     {
+        Category::query()->delete();
+
         $categories = [
-            ['name' => 'Electronics', 'description' => 'Latest gadgets and electronics', 'sort_order' => 1],
-            ['name' => 'Clothing', 'description' => 'Fashionable clothing for all', 'sort_order' => 2],
-            ['name' => 'Home & Garden', 'description' => 'Everything for your home', 'sort_order' => 3],
-            ['name' => 'Sports', 'description' => 'Sports equipment and gear', 'sort_order' => 4],
-            ['name' => 'Books', 'description' => 'Books for every reader', 'sort_order' => 5],
-            ['name' => 'Toys & Games', 'description' => 'Fun for all ages', 'sort_order' => 6],
-            ['name' => 'Beauty', 'description' => 'Beauty and personal care', 'sort_order' => 7],
-            ['name' => 'Automotive', 'description' => 'Car parts and accessories', 'sort_order' => 8],
+            ['name' => 'Laptops & Computers', 'sort_order' => 1],
+            ['name' => 'Smartphones & Tablets', 'sort_order' => 2],
+            ['name' => 'Headphones & Audio', 'sort_order' => 3],
+            ['name' => 'Cables & Adapters', 'sort_order' => 4],
+            ['name' => 'Chargers & Power', 'sort_order' => 5],
+            ['name' => 'Keyboards & Mice', 'sort_order' => 6],
+            ['name' => 'Monitors & Displays', 'sort_order' => 7],
+            ['name' => 'Storage & Drives', 'sort_order' => 8],
+            ['name' => 'Smart Home', 'sort_order' => 9],
+            ['name' => 'Wearables', 'sort_order' => 10],
+            ['name' => 'Gaming', 'sort_order' => 11],
+            ['name' => 'Networking', 'sort_order' => 12],
         ];
 
-        foreach ($categories as $category) {
+        foreach ($categories as $data) {
+            $slug = Str::slug($data['name']);
             Category::create([
-                'name' => $category['name'],
-                'slug' => Str::slug($category['name']),
-                'description' => $category['description'],
-                'image' => 'categories/' . Str::slug($category['name']) . '.jpg',
+                'name' => $data['name'],
+                'slug' => $slug,
+                'description' => "Browse our collection of {$data['name']}",
+                'image' => 'https://picsum.photos/seed/cat-' . $slug . '/640/480',
                 'is_active' => true,
-                'sort_order' => $category['sort_order'],
+                'sort_order' => $data['sort_order'],
             ]);
         }
 
-        $this->command->info('✅ Categories seeded successfully!');
+        $this->command->info('12 electronics categories seeded!');
     }
 }

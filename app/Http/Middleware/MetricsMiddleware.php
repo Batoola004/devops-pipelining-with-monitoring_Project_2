@@ -34,7 +34,12 @@ class MetricsMiddleware
         
         $count = Cache::get('metrics:request_count', 0);
         $currentAvg = Cache::get('metrics:avg_response_time_ms', 0);
-        $newAvg = $currentAvg + ($durationMs - $currentAvg) / min($count, 1000);
+
+        if ($count > 0) {
+            $newAvg = $currentAvg + ($durationMs - $currentAvg) / min($count, 1000);
+        } else {
+            $newAvg = $durationMs;
+        }
         Cache::forever('metrics:avg_response_time_ms', round($newAvg, 2));
 
         

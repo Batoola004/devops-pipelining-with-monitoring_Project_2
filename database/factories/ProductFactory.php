@@ -22,17 +22,12 @@ class ProductFactory extends Factory
             'description' => $this->faker->paragraphs(3, true),
             'price' => $price,
             'original_price' => $this->faker->boolean(30) ? $price * 1.3 : null,
-            'image' => 'products/' . $this->faker->randomElement([
-                'shirt1.jpg', 'shirt2.jpg', 'pants1.jpg',
-                'pants2.jpg', 'shoes1.jpg', 'shoes2.jpg',
-                'dress1.jpg', 'jacket1.jpg',
-            ]),
-            'images' => $this->faker->randomElements([
-                'products/shirt1.jpg', 'products/shirt2.jpg', 'products/shirt3.jpg',
-                'products/pants1.jpg', 'products/pants2.jpg',
-                'products/shoes1.jpg', 'products/shoes2.jpg',
-                'products/dress1.jpg', 'products/jacket1.jpg',
-            ], $this->faker->numberBetween(2, 4)),
+            'image' => 'https://picsum.photos/seed/prod-' . Str::slug($name) . '/640/480',
+            'images' => [
+                'https://picsum.photos/seed/prod-' . Str::slug($name) . '-1/640/480',
+                'https://picsum.photos/seed/prod-' . Str::slug($name) . '-2/640/480',
+                'https://picsum.photos/seed/prod-' . Str::slug($name) . '-3/640/480',
+            ],
             'category_id' => Category::inRandomOrder()->first()?->id ?? Category::factory(),
             'is_active' => true,
             'featured' => $this->faker->boolean(20),

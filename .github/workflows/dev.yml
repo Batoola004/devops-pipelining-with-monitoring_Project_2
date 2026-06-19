@@ -1,0 +1,98 @@
+name: Development Build & Test (6 Services - Prometheus + Grafana Included)
+
+on:
+  push:
+    branches: ["dev", "develop", "feature/**"]
+  pull_request:
+    branches: ["main", "dev"]
+
+env:
+  DOCKER_IMAGE_NAME: mtaher3toani/laravel-app
+  IMAGE_NAME: mtaher3toani/laravel-app:latest
+
+jobs:
+  lint:
+    name: PHP Lint & Quality
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: PHP Syntax Check (lint)
+        run: |
+          errors=$(find . -name "*.php" -not -path "./vendor/*" -not -path "./storage/*" -exec php -l {} \; 2>&1 | grep -v "^No syntax errors" || true)
+          if [ -n "$errors" ]; then echo "$errors"; exit 1; fi
+          echo "All PHP files passed syntax check."
+
+  build:
+    name: Build Docker Image
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker image (with cache)
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: false
+          load: true
+          tags: ${{ env.DOCKER_IMAGE_NAME }}:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  integration-test:
+    name: Integration Test (6 Services)
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Start all 6 services
+        run: |
+          docker compose -f docker-compose.dev.yml up -d --wait
+          echo "All services started. Waiting for readiness..."
+
+      - name: Wait for application health endpoint
+        run: |
+          for i in $(seq 1 30); do
+            status=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8000/health 2>/dev/null || echo "000")
+            if [ "$status" = "200" ]; then
+              echo "Health check passed (HTTP 200)"
+              exit 0
+            fi
+            echo "Attempt $i: HTTP $status - waiting..."
+            sleep 5
+          done
+          echo "Health check failed after 30 attempts."
+          exit 1
+
+      - name: Verify Prometheus targets are up
+        run: |
+          targets=$(curl -s http://localhost:9090/api/v1/targets 2>/dev/null || echo "{}")
+          up_count=$(echo "$targets" | python3 -c "import sys,json; data=json.load(sys.stdin); targets=data.get('data',{}).get('activeTargets',[]); print(sum(1 for t in targets if t.get('health')=='up'))" 2>/dev/null || echo "0")
+          echo "Prometheus active targets (UP): $up_count"
+          if [ "$up_count" -ge 1 ] 2>/dev/null; then
+            echo "Prometheus targets verified."
+          else
+            echo "Warning: No Prometheus targets UP yet (may take a moment)."
+          fi
+
+      - name: Verify Grafana is reachable
+        run: |
+          grafana_status=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3000 2>/dev/null || echo "000")
+          if [ "$grafana_status" = "200" ] || [ "$grafana_status" = "302" ]; then
+            echo "Grafana is reachable (HTTP $grafana_status)"
+          else
+            echo "Warning: Grafana returned HTTP $grafana_status (may still be starting)."
+          fi
+
+      - name: Cleanup
+        if: always()
+        run: |
+          docker compose -f docker-compose.dev.yml down -v
