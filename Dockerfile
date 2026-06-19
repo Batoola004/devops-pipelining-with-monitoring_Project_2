@@ -28,6 +28,7 @@ RUN composer install \
 FROM php:8.4-fpm
 
 RUN apt-get update && apt-get install -y \
+    libicu-dev \
     git \
     curl \
     libpng-dev \
@@ -38,6 +39,8 @@ RUN apt-get update && apt-get install -y \
     unzip \
     default-mysql-client \
     && apt-get clean \
+    && docker-php-ext-configure intl \
+    && docker-php-ext-install intl \
     && rm -rf /var/lib/apt/lists/*
 
 RUN docker-php-ext-install \

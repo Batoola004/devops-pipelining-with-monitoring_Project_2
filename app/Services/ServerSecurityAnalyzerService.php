@@ -13,7 +13,11 @@ class ServerSecurityAnalyzerService
         $response = Http::withHeaders([
             'Authorization' => 'Bearer ' . config('services.openrouter.api_key'),
             'Content-Type'  => 'application/json',
-        ])->post('https://openrouter.ai/api/v1/chat/completions', [
+            
+        ])
+        ->timeout(220)
+        ->retry(5, 1000)
+        ->post('https://openrouter.ai/api/v1/chat/completions', [
             
             'model' => 'poolside/laguna-xs.2:free', 
             'messages' => [
