@@ -85,7 +85,7 @@ jobs:
         run: |
           echo ">>> Waiting for Laravel app to boot..."
           for i in $(seq 1 30); do
-            if docker exec fiberroad-app php artisan inspire > /dev/null 2>&1; then
+            if docker exec fiberroad-app php artisan --version > /dev/null 2>&1; then
               echo "Laravel app booted successfully"
               echo ""
               echo ">>> Testing HTTP through nginx..."
