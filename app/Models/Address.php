@@ -10,9 +10,19 @@ class Address extends Model
 {
     use HasFactory;
 
+    //just adding shi so i can test the git commit hook
     protected $fillable = [
-        'user_id', 'label', 'full_name', 'phone',
-        'line1', 'line2', 'city', 'state', 'zip', 'country', 'is_default',
+        'user_id',
+        'label',
+        'full_name',
+        'phone',
+        'line1',
+        'line2',
+        'city',
+        'state',
+        'zip',
+        'country',
+        'is_default',
     ];
 
     protected $casts = ['is_default' => 'boolean'];
