@@ -35,7 +35,9 @@ class SecurityController extends Controller
 
             $analysisReport = $analyzer->analyzeWithAI($metricsData);
 
-            return response($analysisReport)->header('Content-Type', 'text/plain; charset=utf-8');
+            return view('security.analysis', [
+                'report' => $analysisReport
+]);
 
         } catch (\Exception $e) {
             return response("Error: " . $e->getMessage())->header('Content-Type', 'text/plain; charset=utf-8');
