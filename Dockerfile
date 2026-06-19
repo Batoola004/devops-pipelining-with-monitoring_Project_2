@@ -13,6 +13,10 @@ FROM composer:2.8 AS composer-builder
 WORKDIR /app
 
 COPY composer.json composer.lock ./
+
+# الإضافة الوحيدة لحل مشكلتك: زيادة وقت الانتظار إلى 10 دقائق لكي لا يفصل الاتصال
+ENV COMPOSER_PROCESS_TIMEOUT=600
+
 RUN composer install \
     --no-dev \
     --no-interaction \
@@ -24,6 +28,7 @@ RUN composer install \
 FROM php:8.4-fpm
 
 RUN apt-get update && apt-get install -y \
+    libicu-dev \
     git \
     curl \
     libpng-dev \
@@ -34,6 +39,8 @@ RUN apt-get update && apt-get install -y \
     unzip \
     default-mysql-client \
     && apt-get clean \
+    && docker-php-ext-configure intl \
+    && docker-php-ext-install intl \
     && rm -rf /var/lib/apt/lists/*
 
 RUN docker-php-ext-install \

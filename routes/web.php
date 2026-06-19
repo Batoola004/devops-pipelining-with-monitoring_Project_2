@@ -26,7 +26,7 @@ Route::get('/products', function () {
         $s = request('search');
         $query->where(function ($q) use ($s) {
             $q->where('name', 'like', "%{$s}%")
-              ->orWhere('description', 'like', "%{$s}%");
+                ->orWhere('description', 'like', "%{$s}%");
         });
     }
 
@@ -62,7 +62,8 @@ Route::get('/products', function () {
 })->name('products.index');
 
 Route::get('/products/{product:slug}', function (Product $product) {
-    if (!$product->is_active) abort(404);
+    if (!$product->is_active)
+        abort(404);
     $product->load('category');
     $related = Product::active()->byCategory($product->category_id)
         ->where('id', '!=', $product->id)->inStock()->take(4)->get();
@@ -74,12 +75,14 @@ Route::get('/cart', fn() => Inertia::render('cart'))->name('cart');
 Route::get('/checkout', fn() => Inertia::render('checkout'))->name('checkout');
 Route::get('/orders', fn() => Inertia::render('orders'))->name('orders');
 Route::get('/orders/{order}', function (App\Models\Order $order) {
-    if ($order->user_id !== auth()->id()) abort(403);
+    if ($order->user_id !== auth()->id())
+        abort(403);
     $order->load('items');
     return Inertia::render('order-detail', ['order' => $order]);
 })->name('orders.show');
 Route::get('/orders/{order}/confirmation', function (App\Models\Order $order) {
-    if ($order->user_id !== auth()->id()) abort(403);
+    if ($order->user_id !== auth()->id())
+        abort(403);
     $order->load('items');
     return Inertia::render('order-confirmation', ['order' => $order]);
 })->name('orders.confirmation');
@@ -110,7 +113,8 @@ Route::get('/returns', fn() => Inertia::render('returns'))->name('returns');
 // Prometheus metrics
 Route::get('/metrics', \App\Http\Controllers\MetricsController::class)
     ->middleware('throttle:60,1');
-
+use App\Http\Controllers\SecurityController;
+Route::get('/analyze-security', [SecurityController::class, 'checkStatus']);
 // Health check
 Route::get('/health', \App\Http\Controllers\HealthController::class)
     ->middleware('throttle:60,1');

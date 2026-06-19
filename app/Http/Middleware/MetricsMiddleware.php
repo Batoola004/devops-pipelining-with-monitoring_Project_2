@@ -5,11 +5,11 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 
 class MetricsMiddleware
 {
-    
     public function handle(Request $request, Closure $next): Response
     {
         $start = microtime(true);
@@ -18,9 +18,12 @@ class MetricsMiddleware
 
         $duration = (microtime(true) - $start) * 1000;
 
-        
-        if (! str_contains($request->path(), 'metrics')) {
-            $this->trackRequest($request, $response, $duration);
+        try {
+            if (!str_contains($request->path(), 'metrics')) {
+                $this->trackRequest($request, $response, $duration);
+            }
+        } catch (\Exception $e) {
+            Log::warning('Metrics tracking failed: ' . $e->getMessage());
         }
 
         return $response;
@@ -28,28 +31,21 @@ class MetricsMiddleware
 
     private function trackRequest(Request $request, Response $response, float $durationMs): void
     {
-        
         Cache::increment('metrics:request_count');
 
-        
         $count = Cache::get('metrics:request_count', 0);
         $currentAvg = Cache::get('metrics:avg_response_time_ms', 0);
 
-        if ($count > 0) {
-            $newAvg = $currentAvg + ($durationMs - $currentAvg) / min($count, 1000);
-        } else {
-            $newAvg = $durationMs;
-        }
+        $newAvg = $currentAvg + ($durationMs - $currentAvg) / max(1, min($count, 1000));
+
         Cache::forever('metrics:avg_response_time_ms', round($newAvg, 2));
 
-        
+
         $method = strtolower($request->method());
         Cache::increment('metrics:requests_by_method:' . $method);
 
-        
         $statusCode = $response->getStatusCode();
-        $statusGroup = (int)($statusCode / 100) . 'xx';
+        $statusGroup = (int) ($statusCode / 100) . 'xx';
         Cache::increment('metrics:requests_by_status:' . $statusGroup);
-
     }
 }

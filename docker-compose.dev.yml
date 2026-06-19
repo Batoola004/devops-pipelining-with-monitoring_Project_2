@@ -50,6 +50,7 @@ services:
       LOG_CHANNEL: stack
       LOG_LEVEL: ${LOG_LEVEL:-warning}
     volumes:
+      - ./:/var/www                  # <-- أضف هذا السطر هنا لربط ملفاتك ومجلد vendor المحلي
       - app-storage:/var/www/storage
     depends_on:
       mysql:
@@ -125,7 +126,6 @@ services:
       retries: 5
       start_period: 30s
 
-  
   redis:
     image: redis:7-alpine
     container_name: fiberroad-redis
@@ -142,7 +142,6 @@ services:
       timeout: 3s
       retries: 3
 
-  
   prometheus:
     image: prom/prometheus:latest
     container_name: fiberroad-prometheus
@@ -161,7 +160,6 @@ services:
     networks:
       - fiberroad
 
-  
   grafana:
     image: grafana/grafana:latest
     container_name: fiberroad-grafana
