@@ -105,8 +105,6 @@ jobs:
           exit 1
 
       - name: Verify Prometheus targets are up
-
-      - name: Verify Prometheus targets are up
         run: |
           targets=$(curl -s http://localhost:9090/api/v1/targets 2>/dev/null || echo "{}")
           up_count=$(echo "$targets" | python3 -c "import sys,json; data=json.load(sys.stdin); targets=data.get('data',{}).get('activeTargets',[]); print(sum(1 for t in targets if t.get('health')=='up'))" 2>/dev/null || echo "0")
