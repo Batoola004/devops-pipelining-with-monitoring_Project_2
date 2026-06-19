@@ -7,9 +7,6 @@ use Illuminate\Support\Facades\Log;
 
 class ServerSecurityAnalyzerService
 {
-    /**
-     * تحليل المقاييس باستخدام الذكاء الاصطناعي عبر OpenRouter
-     */
     public function analyzeWithAI($metricsData)
 {
     try {
@@ -17,7 +14,7 @@ class ServerSecurityAnalyzerService
             'Authorization' => 'Bearer ' . config('services.openrouter.api_key'),
             'Content-Type'  => 'application/json',
         ])->post('https://openrouter.ai/api/v1/chat/completions', [
-            // استخدمنا موديل مجاني ممتاز في التنسيق
+            
             'model' => 'poolside/laguna-xs.2:free', 
             'messages' => [
                 [
@@ -49,10 +46,10 @@ class ServerSecurityAnalyzerService
             return $response->json()['choices'][0]['message']['content'];
         }
 
-        return "خطأ في الاتصال بالذكاء الاصطناعي: " . $response->status();
+        return " Error While Fetching AI Analysis: " . $response->status();
 
     } catch (\Exception $e) {
-        return "مشكلة في الخدمة: " . $e->getMessage();
+        return " Error in the service: " . $e->getMessage();
     }
 }
 }
