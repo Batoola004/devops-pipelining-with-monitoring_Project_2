@@ -10,6 +10,10 @@ env:
   DOCKER_IMAGE_NAME: mtaher3toani/laravel-app
   IMAGE_NAME: mtaher3toani/laravel-app:latest
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   lint:
     name: PHP Lint & Quality
@@ -18,11 +22,24 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          tools: composer:v2
+
       - name: PHP Syntax Check (lint)
         run: |
+          set -e
           errors=$(find . -name "*.php" -not -path "./vendor/*" -not -path "./storage/*" -exec php -l {} \; 2>&1 | grep -v "^No syntax errors" || true)
-          if [ -n "$errors" ]; then echo "$errors"; exit 1; fi
+          if [ -n "$errors" ]; then
+            echo "$errors"
+            exit 1
+          fi
           echo "All PHP files passed syntax check."
+
+      - name: Validate composer.json / composer.lock
+        run: composer validate --strict
 
   frontend:
     name: Frontend Build (npm ci + vite build)
@@ -35,17 +52,24 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: 'npm'
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci
 
       - name: TypeScript type-check
         continue-on-error: true
-        run: npx tsc --noEmit 2>&1 || echo "⚠️ TypeScript errors found (non-blocking warning)"
+        run: npx tsc --noEmit 2>&1 || echo "TypeScript errors found (non-blocking warning)"
 
       - name: Build frontend assets
         run: npm run build
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-build
+          path: public/build
+          retention-days: 1
 
   build:
     name: Build Docker Image
@@ -68,63 +92,104 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+      - name: Save image as artifact for downstream job
+        run: docker save ${{ env.DOCKER_IMAGE_NAME }}:latest -o /tmp/app-image.tar
+
+      - name: Upload image artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: docker-image
+          path: /tmp/app-image.tar
+          retention-days: 1
+
   integration-test:
     name: Integration Test (6 Services)
     runs-on: ubuntu-latest
     needs: build
+    env:
+      APP_KEY: base64:$(openssl rand -base64 32)
+      DB_DATABASE: laravel
+      DB_USERNAME: laravel
+      DB_PASSWORD: secret
+      DB_ROOT_PASSWORD: root_secret
+      GRAFANA_USER: admin
+      GRAFANA_PASSWORD: admin
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Start all 6 services
-        run: |
-          docker compose -f docker-compose.dev.yml up -d --wait
-          echo "All services started. Waiting for readiness..."
+      - name: Download image artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: docker-image
+          path: /tmp
 
-      - name: Wait for application health endpoint
+      - name: Load Docker image
+        run: docker load -i /tmp/app-image.tar
+
+      - name: Generate a real APP_KEY
+        run: echo "APP_KEY=base64:$(openssl rand -base64 32)" >> "$GITHUB_ENV"
+
+      - name: Start all 6 services
+        run: docker compose -f docker-compose.dev.yml up -d
+
+      - name: Wait for all services to report healthy
         run: |
-          echo ">>> Waiting for Laravel app to boot..."
-          for i in $(seq 1 30); do
-            if docker exec fiberroad-app php artisan --version > /dev/null 2>&1; then
-              echo "Laravel app booted successfully"
-              echo ""
-              echo ">>> Testing HTTP through nginx..."
-              docker exec fiberroad-nginx apk add --no-cache curl > /dev/null 2>&1 || true
-              status=$(docker exec fiberroad-nginx curl -s -o /dev/null -w "%{http_code}" http://localhost/up 2>/dev/null || echo "failed")
-              echo "HTTP /up status: $status"
-              status=$(docker exec fiberroad-nginx curl -s -o /dev/null -w "%{http_code}" http://localhost/ 2>/dev/null || echo "failed")
-              echo "HTTP / status: $status"
-              status=$(docker exec fiberroad-nginx curl -s -o /dev/null -w "%{http_code}" http://localhost/index.php 2>/dev/null || echo "failed")
-              echo "HTTP /index.php status: $status"
-              exit 0
-            fi
-            echo "Attempt $i: Laravel not ready yet - waiting..."
-            sleep 5
+          set -e
+          services="fiberroad-mysql fiberroad-redis fiberroad-app fiberroad-nginx fiberroad-prometheus fiberroad-grafana"
+          deadline=$((SECONDS + 180))
+          for svc in $services; do
+            echo ">>> Waiting for $svc to become healthy..."
+            until [ "$(docker inspect -f '{{.State.Health.Status}}' "$svc" 2>/dev/null)" = "healthy" ]; do
+              if [ $SECONDS -ge $deadline ]; then
+                echo "::error::$svc did not become healthy in time"
+                echo "---- docker compose ps ----"
+                docker compose -f docker-compose.dev.yml ps
+                echo "---- logs: $svc ----"
+                docker logs "$svc" --tail 200 || true
+                exit 1
+              fi
+              sleep 5
+            done
+            echo "$svc is healthy."
           done
-          echo "Laravel failed to boot after 30 attempts."
-          exit 1
+
+      - name: Smoke test HTTP through nginx
+        run: |
+          set -e
+          status=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8000/up || echo "000")
+          echo "HTTP /up status: $status"
+          if [ "$status" != "200" ]; then
+            echo "::error::Expected HTTP 200 from /up, got $status"
+            docker logs fiberroad-nginx --tail 100 || true
+            docker logs fiberroad-app --tail 100 || true
+            exit 1
+          fi
 
       - name: Verify Prometheus targets are up
         run: |
-          targets=$(curl -s http://localhost:9090/api/v1/targets 2>/dev/null || echo "{}")
-          up_count=$(echo "$targets" | python3 -c "import sys,json; data=json.load(sys.stdin); targets=data.get('data',{}).get('activeTargets',[]); print(sum(1 for t in targets if t.get('health')=='up'))" 2>/dev/null || echo "0")
+          targets=$(curl -s http://localhost:9090/api/v1/targets)
+          up_count=$(echo "$targets" | python3 -c "import sys,json; d=json.load(sys.stdin); t=d.get('data',{}).get('activeTargets',[]); print(sum(1 for x in t if x.get('health')=='up'))")
           echo "Prometheus active targets (UP): $up_count"
-          if [ "$up_count" -ge 1 ] 2>/dev/null; then
-            echo "Prometheus targets verified."
-          else
-            echo "Warning: No Prometheus targets UP yet (may take a moment)."
+          if [ "$up_count" -lt 1 ]; then
+            echo "::error::No Prometheus targets are UP"
+            exit 1
           fi
 
       - name: Verify Grafana is reachable
         run: |
-          grafana_status=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3000 2>/dev/null || echo "000")
-          if [ "$grafana_status" = "200" ] || [ "$grafana_status" = "302" ]; then
-            echo "Grafana is reachable (HTTP $grafana_status)"
-          else
-            echo "Warning: Grafana returned HTTP $grafana_status (may still be starting)."
+          status=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3000/api/health)
+          echo "Grafana /api/health status: $status"
+          if [ "$status" != "200" ]; then
+            echo "::error::Grafana not healthy (HTTP $status)"
+            docker logs fiberroad-grafana --tail 100 || true
+            exit 1
           fi
+
+      - name: Dump logs on failure
+        if: failure()
+        run: docker compose -f docker-compose.dev.yml logs --tail=200
 
       - name: Cleanup
         if: always()
-        run: |
-          docker compose -f docker-compose.dev.yml down -v
+        run: docker compose -f docker-compose.dev.yml down -v
