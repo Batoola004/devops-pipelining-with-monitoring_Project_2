@@ -19,7 +19,8 @@ class MetricsController extends Controller
         $metrics[] = 'laravel_app_info{version="' . app()->version() . '",env="' . app()->environment() . '"} 1';
 
         
-        $serverStart = Cache::get('metrics:server_start_time', time());
+        Cache::add('metrics:server_start_time', time());
+        $serverStart = Cache::get('metrics:server_start_time');
         $uptime = time() - $serverStart;
         $metrics[] = '# HELP laravel_app_uptime_seconds Application uptime in seconds';
         $metrics[] = '# TYPE laravel_app_uptime_seconds gauge';
