@@ -16,11 +16,11 @@ services:
     networks:
       - fiberroad
     healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost/nginx-health"]
-      interval: 30s
+      test: ["CMD", "nginx", "-t"]
+      interval: 10s
       timeout: 5s
       retries: 3
-      start_period: 10s
+      start_period: 5s
 
   
   app:
