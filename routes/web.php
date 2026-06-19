@@ -13,4 +13,5 @@ Route::get('/categories/{category}', [ProductController::class, 'category'])->na
 // Prometheus metrics endpoint
 Route::get('/metrics', \App\Http\Controllers\MetricsController::class)
     ->middleware('throttle:60,1');
-
+use App\Http\Controllers\SecurityController;
+Route::get('/analyze-security', [SecurityController::class, 'checkStatus']);

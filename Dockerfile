@@ -13,6 +13,10 @@ FROM composer:2.8 AS composer-builder
 WORKDIR /app
 
 COPY composer.json composer.lock ./
+
+# الإضافة الوحيدة لحل مشكلتك: زيادة وقت الانتظار إلى 10 دقائق لكي لا يفصل الاتصال
+ENV COMPOSER_PROCESS_TIMEOUT=600
+
 RUN composer install \
     --no-dev \
     --no-interaction \

@@ -22,8 +22,22 @@ services:
       retries: 3
       start_period: 10s
 
-  
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: fiberroad-cadvisor
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    networks:
+      - fiberroad
+
   app:
+    build: .
     image: fiber-road:latest
     container_name: fiberroad-app
     restart: unless-stopped
@@ -48,6 +62,7 @@ services:
       LOG_CHANNEL: stack
       LOG_LEVEL: ${LOG_LEVEL:-warning}
     volumes:
+      - ./:/var/www                  # <-- أضف هذا السطر هنا لربط ملفاتك ومجلد vendor المحلي
       - app-storage:/var/www/storage
     depends_on:
       mysql:
@@ -63,7 +78,6 @@ services:
       retries: 3
       start_period: 30s
 
-  
   mysql:
     image: mysql:8.0
     container_name: fiberroad-mysql
@@ -86,7 +100,6 @@ services:
       retries: 5
       start_period: 30s
 
-  
   redis:
     image: redis:7-alpine
     container_name: fiberroad-redis
@@ -103,7 +116,6 @@ services:
       timeout: 3s
       retries: 3
 
-  
   prometheus:
     image: prom/prometheus:latest
     container_name: fiberroad-prometheus
@@ -122,7 +134,6 @@ services:
     networks:
       - fiberroad
 
-  
   grafana:
     image: grafana/grafana:latest
     container_name: fiberroad-grafana
