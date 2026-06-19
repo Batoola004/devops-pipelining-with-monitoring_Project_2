@@ -110,3 +110,7 @@ Route::get('/returns', fn() => Inertia::render('returns'))->name('returns');
 // Prometheus metrics
 Route::get('/metrics', \App\Http\Controllers\MetricsController::class)
     ->middleware('throttle:60,1');
+
+// Health check
+Route::get('/health', \App\Http\Controllers\HealthController::class)
+    ->middleware('throttle:60,1');
