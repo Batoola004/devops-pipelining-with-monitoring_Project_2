@@ -33,18 +33,21 @@ class SecurityController extends Controller
 
             // إذا لم نتمكن من جلب البيانات
             if (empty($metricsData)) {
-                return response("لم نتمكن من سحب البيانات من Prometheus. تأكد من عمل الحاويات.")
-                        ->header('Content-Type', 'text/plain; charset=utf-8');
+                return view('security.analysis', [
+                    'report' => 'لم نتمكن من سحب البيانات من Prometheus. تأكد من عمل الحاويات.',
+                ]);
             }
 
             // 3. إرسال البيانات للذكاء الاصطناعي
             $analysisReport = $analyzer->analyzeWithAI($metricsData);
 
-            // نرجع التقرير ليعرض في المتصفح
-            return response($analysisReport)->header('Content-Type', 'text/plain; charset=utf-8');
+            // نرجع التقرير ليعرض في المتصفح مع التنسيق
+            return view('security.analysis', ['report' => $analysisReport]);
 
         } catch (\Exception $e) {
-            return response("حدث خطأ: " . $e->getMessage())->header('Content-Type', 'text/plain; charset=utf-8');
+            return view('security.analysis', [
+                'report' => 'حدث خطأ: ' . $e->getMessage(),
+            ]);
         }
     }
 }
