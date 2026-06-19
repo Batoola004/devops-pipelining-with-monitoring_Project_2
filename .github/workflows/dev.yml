@@ -43,6 +43,9 @@ jobs:
       - name: Build frontend assets
         run: npm run build
 
+      - name: TypeScript type-check
+        run: npx tsc --noEmit
+
   build:
     name: Build Docker Image
     runs-on: ubuntu-latest
