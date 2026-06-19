@@ -16,12 +16,13 @@ class MetricsMiddleware
 
         $response = $next($request);
 
-        $duration = (microtime(true) - $start) * 1000; 
+        $duration = (microtime(true) - $start) * 1000;
 
-        // تغليف عملية التتبع بـ try-catch لمنع الانهيار
+        // تغليف عملية التتبع بـ try-catch لمنع الانهيار (حمايتك)
         try {
             if (! str_contains($request->path(), 'metrics')) {
-                $this->trackRequest($duration);
+                // استخدمنا التحديث الجديد من صديقتك بتمرير الـ request والـ response
+                $this->trackRequest($request, $response, $duration);
             }
         } catch (\Exception $e) {
             // تسجيل الخطأ في اللوج فقط دون إيقاف التطبيق
@@ -31,15 +32,26 @@ class MetricsMiddleware
         return $response;
     }
 
-    private function trackRequest(float $durationMs): void
+    private function trackRequest(Request $request, Response $response, float $durationMs): void
     {
         Cache::increment('metrics:request_count');
         
         $count = Cache::get('metrics:request_count', 0);
         $currentAvg = Cache::get('metrics:avg_response_time_ms', 0);
         
+        // استخدمنا الكود الرياضي الخاص بك لأنه أكثر أماناً (يمنع القسمة على صفر)
         $newAvg = $currentAvg + ($durationMs - $currentAvg) / max(1, min($count, 1000));
         
         Cache::forever('metrics:avg_response_time_ms', round($newAvg, 2));
+
+        // ==========================================
+        // إضافات صديقتك: تتبع تفاصيل الطلبات
+        // ==========================================
+        $method = strtolower($request->method());
+        Cache::increment('metrics:requests_by_method:' . $method);
+
+        $statusCode = $response->getStatusCode();
+        $statusGroup = (int)($statusCode / 100) . 'xx';
+        Cache::increment('metrics:requests_by_status:' . $statusGroup);
     }
 }

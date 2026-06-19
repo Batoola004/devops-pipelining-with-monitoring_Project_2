@@ -17,10 +17,13 @@ class DatabaseSeeder extends Seeder
             ProductSeeder::class,
         ]);
 
-        User::factory()->create([
+        User::create([
             'name' => 'Admin User',
             'email' => 'admin@fiberroad.com',
+            'password' => bcrypt('password'),
         ]);
+
+        $this->command->info('👤 Admin user created (admin@fiberroad.com / password)');
 
         $this->command->info('🎉 Database seeding complete!');
     }

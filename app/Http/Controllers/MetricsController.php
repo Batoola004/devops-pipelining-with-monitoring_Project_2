@@ -72,6 +72,33 @@ class MetricsController extends Controller
         $metrics[] = '# TYPE laravel_app_storage_used_percent gauge';
         $metrics[] = "laravel_app_storage_used_percent {$diskUsedPercent}";
 
+        
+        $metrics[] = '# HELP laravel_app_php_version_info PHP version information';
+        $metrics[] = '# TYPE laravel_app_php_version_info gauge';
+        $metrics[] = 'laravel_app_php_version_info{version="' . PHP_VERSION . '"} 1';
+
+        
+        $metrics[] = '# HELP laravel_app_http_requests_by_method Request count by HTTP method';
+        $metrics[] = '# TYPE laravel_app_http_requests_by_method counter';
+        $methods = ['get', 'post', 'put', 'patch', 'delete', 'head', 'options'];
+        foreach ($methods as $method) {
+            $count = Cache::get('metrics:requests_by_method:' . $method, 0);
+            if ($count > 0) {
+                $metrics[] = "laravel_app_http_requests_by_method{method=\"{$method}\"} {$count}";
+            }
+        }
+
+        
+        $metrics[] = '# HELP laravel_app_http_requests_by_status Request count by HTTP status group';
+        $metrics[] = '# TYPE laravel_app_http_requests_by_status counter';
+        $statusGroups = ['2xx', '3xx', '4xx', '5xx'];
+        foreach ($statusGroups as $group) {
+            $count = Cache::get('metrics:requests_by_status:' . $group, 0);
+            if ($count > 0) {
+                $metrics[] = "laravel_app_http_requests_by_status{status_group=\"{$group}\"} {$count}";
+            }
+        }
+
         return response(implode("\n", $metrics) . "\n", 200)
             ->header('Content-Type', 'text/plain; charset=utf-8');
     }
