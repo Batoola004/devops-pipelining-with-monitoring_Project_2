@@ -24,6 +24,12 @@ class Product extends Model
         'sku',
     ];
 
+    protected $appends = [
+        'has_stock',
+        'image_url',
+        'images_urls',
+    ];
+
     protected $casts = [
         'price' => 'decimal:2',
         'original_price' => 'decimal:2',
@@ -69,5 +75,16 @@ class Product extends Model
             return asset('storage/' . $this->image);
         }
         return null;
+    }
+
+    public function getImagesUrlsAttribute()
+    {
+        $imgs = $this->images;
+        if (is_array($imgs)) return $imgs;
+        if (is_string($imgs)) {
+            $decoded = json_decode($imgs, true);
+            return is_array($decoded) ? $decoded : [$imgs];
+        }
+        return [];
     }
 }

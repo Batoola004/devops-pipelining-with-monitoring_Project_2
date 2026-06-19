@@ -18,7 +18,7 @@ class CategoryFactory extends Factory
             'name' => ucfirst($name),
             'slug' => Str::slug($name),
             'description' => $this->faker->sentence(),
-            'image' => 'categories/' . Str::slug($name) . '.jpg',
+            'image' => 'https://picsum.photos/seed/cat-' . Str::slug($name) . '/640/480',
             'is_active' => true,
             'sort_order' => $this->faker->numberBetween(1, 20),
         ];
