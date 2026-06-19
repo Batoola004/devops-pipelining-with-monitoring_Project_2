@@ -28,7 +28,7 @@ class ServerSecurityAnalyzerService
                     You MUST return your analysis in the following strict Markdown format:
                     
                     ### 🛡️ Security Analysis Report
-                    **🚨 Threat Level:** [Safe 🟢 / Warning 🟡 / Critical 🔴]
+                    **🚨 Threat Level:** [Safe 🟢 / Nothing is going on 🔵 / Warning 🟡 / Critical 🔴]
                     
                     **📊 Metrics Overview:**
                     [Briefly summarize the metrics in 1-2 lines]
