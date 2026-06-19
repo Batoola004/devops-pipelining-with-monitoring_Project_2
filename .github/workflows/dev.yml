@@ -92,6 +92,29 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+      - name: Verify vendor/autoloader inside built image
+        run: |
+          set -e
+          echo ">>> Checking Laravel framework class is present..."
+          if ! docker run --rm ${{ env.DOCKER_IMAGE_NAME }}:latest \
+              test -f /var/www/vendor/laravel/framework/src/Illuminate/Foundation/Application.php; then
+            echo "::error::Illuminate/Foundation/Application.php missing from image vendor/ - composer install in the build stage did not produce a usable vendor directory"
+            exit 1
+          fi
+          echo "Framework class file found."
+
+          echo ">>> Checking autoload.php exists and is non-trivial..."
+          autoload_size=$(docker run --rm ${{ env.DOCKER_IMAGE_NAME }}:latest stat -c%s /var/www/vendor/autoload.php 2>/dev/null || echo 0)
+          echo "autoload.php size: $autoload_size bytes"
+          if [ "$autoload_size" -lt 200 ]; then
+            echo "::error::vendor/autoload.php is missing or suspiciously small ($autoload_size bytes)"
+            exit 1
+          fi
+
+          echo ">>> Sanity-checking artisan can resolve the framework class..."
+          docker run --rm ${{ env.DOCKER_IMAGE_NAME }}:latest \
+            php -r "require '/var/www/vendor/autoload.php'; var_dump(class_exists('Illuminate\Foundation\Application'));"
+
       - name: Save image as artifact for downstream job
         run: docker save ${{ env.DOCKER_IMAGE_NAME }}:latest -o /tmp/app-image.tar
 
