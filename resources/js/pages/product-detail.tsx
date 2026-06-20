@@ -67,7 +67,7 @@ export default function ProductDetail({ product }: ProductDetailProps) {
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       <Head title={`${product.name} — FiberRoad`} />
 
-      {/* Breadcrumb */}
+      
       <nav className="mb-6 flex items-center gap-2 text-sm text-muted-foreground">
         <Link href="/" className="transition-colors hover:text-foreground">Home</Link>
         <span>/</span>
@@ -83,7 +83,7 @@ export default function ProductDetail({ product }: ProductDetailProps) {
       </nav>
 
       <div className="grid gap-8 lg:grid-cols-2 lg:gap-12">
-        {/* Image Gallery */}
+        
         <div>
           <div className="relative mb-4 flex aspect-square items-center justify-center overflow-hidden rounded-2xl bg-muted">
             {images[selectedImg] && !imgErr[selectedImg] ? (
@@ -104,7 +104,7 @@ export default function ProductDetail({ product }: ProductDetailProps) {
               </span>
             )}
           </div>
-          {/* Thumbnails */}
+          
           {images.length > 1 && (
             <div className="flex gap-3 overflow-x-auto pb-2">
               {images.map((url, i) => (
@@ -127,7 +127,7 @@ export default function ProductDetail({ product }: ProductDetailProps) {
           )}
         </div>
 
-        {/* Product Info */}
+        
         <div className="flex flex-col">
           {product.category && (
             <p className="mb-2 font-mono text-xs font-semibold uppercase tracking-widest text-primary">
@@ -138,7 +138,7 @@ export default function ProductDetail({ product }: ProductDetailProps) {
             {product.name}
           </h1>
 
-          {/* Rating */}
+          
           {product.reviews_avg_rating != null && product.reviews_avg_rating > 0 && (
             <div className="mb-4 flex items-center gap-2">
               <Stars rating={product.reviews_avg_rating} />
@@ -148,7 +148,7 @@ export default function ProductDetail({ product }: ProductDetailProps) {
             </div>
           )}
 
-          {/* Price */}
+          
           <div className="mb-6 flex items-baseline gap-3">
             <span className="text-3xl font-semibold text-foreground">
               ${Number(product.price).toFixed(2)}
@@ -165,7 +165,7 @@ export default function ProductDetail({ product }: ProductDetailProps) {
             )}
           </div>
 
-          {/* Stock */}
+          
           <div className="mb-6 flex items-center gap-2">
             {product.has_stock ? (
               <>
@@ -184,17 +184,17 @@ export default function ProductDetail({ product }: ProductDetailProps) {
             )}
           </div>
 
-          {/* Description */}
+          
           {product.description && (
             <p className="mb-8 leading-relaxed text-muted-foreground">{product.description}</p>
           )}
 
-          {/* SKU */}
+          
           {product.sku && (
             <p className="mb-6 font-mono text-xs text-muted-foreground">SKU: {product.sku}</p>
           )}
 
-          {/* Add to Cart / Login Section */}
+          
           <div className="mt-auto border-t border-border pt-6">
             {!isAuthenticated ? (
               <div className="rounded-lg border border-border bg-muted/50 p-6 text-center">
@@ -218,7 +218,7 @@ export default function ProductDetail({ product }: ProductDetailProps) {
             ) : product.has_stock ? (
               <>
                 <div className="mb-4 flex items-center gap-4">
-                  {/* Qty selector */}
+                  
                   <div className="flex items-center rounded-lg border border-border">
                     <button
                       onClick={() => setQty(Math.max(1, qty - 1))}
@@ -263,7 +263,7 @@ export default function ProductDetail({ product }: ProductDetailProps) {
         </div>
       </div>
 
-      {/* Tabs Section */}
+      
       <div className="mt-16 border-t border-border pt-12">
         <div className="mb-8 flex gap-6 border-b border-border">
           {TABS.map((tab) => (
@@ -284,7 +284,7 @@ export default function ProductDetail({ product }: ProductDetailProps) {
           ))}
         </div>
 
-        {/* Tab content */}
+        
         <div className="max-w-3xl">
           {activeTab === 'Description' && (
             <div className="prose-custom leading-relaxed text-muted-foreground">
@@ -319,7 +319,7 @@ export default function ProductDetail({ product }: ProductDetailProps) {
         </div>
       </div>
 
-      {/* Related Products */}
+      
       {relatedProducts.length > 0 && (
         <section className="mt-16 border-t border-border pt-12">
           <h2 className="mb-8 text-2xl font-semibold text-foreground">You May Also Like</h2>

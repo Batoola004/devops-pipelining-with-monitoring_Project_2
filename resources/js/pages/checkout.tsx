@@ -73,9 +73,9 @@ export default function Checkout() {
 
       <form onSubmit={handleSubmit}>
         <div className="grid gap-8 lg:grid-cols-5">
-          {/* Left: Shipping + Payment */}
+          
           <div className="lg:col-span-3 space-y-6">
-            {/* Shipping */}
+            
             <div className="rounded-xl border border-border bg-card p-6">
               <div className="mb-4 flex items-center gap-2">
                 <Truck className="h-5 w-5 text-primary" />
@@ -117,7 +117,7 @@ export default function Checkout() {
               </div>
             </div>
 
-            {/* Payment */}
+            
             <div className="rounded-xl border border-border bg-card p-6">
               <div className="mb-4 flex items-center gap-2">
                 <CreditCard className="h-5 w-5 text-primary" />
@@ -156,7 +156,7 @@ export default function Checkout() {
             </div>
           </div>
 
-          {/* Right: Order Summary */}
+          
           <div className="lg:col-span-2">
             <div className="sticky top-24 rounded-xl border border-border bg-card p-6">
               <h2 className="mb-4 text-lg font-semibold text-card-foreground">Order Summary</h2>

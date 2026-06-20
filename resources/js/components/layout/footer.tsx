@@ -14,7 +14,7 @@ export default function Footer() {
     <footer className="border-t border-border bg-surface text-gray-400">
       <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
-          {/* Column 1: Brand */}
+          
           <div>
             <div className="mb-4 flex items-center gap-2">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
@@ -43,7 +43,7 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Column 2: About */}
+          
           <div>
             <h4 className="mb-5 font-mono text-xs font-semibold uppercase tracking-wider text-gray-300">About</h4>
             <ul className="space-y-3 text-sm">
@@ -55,7 +55,7 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Column 3: Help */}
+          
           <div>
             <h4 className="mb-5 font-mono text-xs font-semibold uppercase tracking-wider text-gray-300">Help</h4>
             <ul className="space-y-3 text-sm">
@@ -66,7 +66,7 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Column 4: Newsletter + Contact */}
+          
           <div>
             <h4 className="mb-5 font-mono text-xs font-semibold uppercase tracking-wider text-gray-300">Stay in Touch</h4>
             <p className="mb-4 text-sm text-gray-400">Subscribe for exclusive deals and new arrivals.</p>
@@ -87,7 +87,7 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Bottom bar */}
+        
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-gray-800 pt-8 sm:flex-row">
           <p className="text-xs text-gray-500">
             &copy; {new Date().getFullYear()} FiberRoad. All rights reserved.

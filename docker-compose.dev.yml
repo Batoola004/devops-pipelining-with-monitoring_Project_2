@@ -12,20 +12,23 @@ services:
       - app-public:/var/www/public:ro
       - app-storage:/var/www/storage:ro
     depends_on:
-      app:
+      app1:
         condition: service_healthy
     networks:
       - fiberroad
     healthcheck:
-      test: ["CMD", "nginx", "-t"]
-      interval: 10s
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1/nginx-health"]
+      interval: 30s
       timeout: 5s
       retries: 3
-      start_period: 5s
+      start_period: 10s
 
-  app:
-    image: ${IMAGE_NAME:-mtaher3toani/laravel-app:latest}
-    container_name: fiberroad-app
+  app1:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ${IMAGE_NAME:-laravel-app:local}
+    container_name: fiberroad-app1
     restart: unless-stopped
     environment:
       APP_ENV: production
@@ -49,12 +52,6 @@ services:
       SESSION_DOMAIN: ${SESSION_DOMAIN:-localhost}
       LOG_CHANNEL: stack
       LOG_LEVEL: ${LOG_LEVEL:-warning}
-    # NOTE: no bind mount of the repo root in CI/staging.
-    # The image already contains the built app + vendor/ from the Dockerfile.
-    # Bind-mounting ./:/var/www here overwrites vendor/ and node build output
-    # with whatever is in the bare git checkout, which breaks `artisan`.
-    # For LOCAL dev with live-reload, use docker-compose.override.yml instead
-    # (see note below) rather than editing this file.
     volumes:
       - app-storage:/var/www/storage
       - app-public:/var/www/public
@@ -66,7 +63,97 @@ services:
     networks:
       - fiberroad
     healthcheck:
-      # Real readiness check: app booted, autoloader present, DB reachable via artisan.
+
+      test: ["CMD-SHELL", "php artisan about --only=environment > /dev/null 2>&1 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  app2:
+    image: ${IMAGE_NAME:-laravel-app:local}
+    container_name: fiberroad-app2
+    restart: unless-stopped
+    environment:
+      APP_ENV: production
+      APP_DEBUG: "false"
+      APP_KEY: ${APP_KEY}
+      APP_URL: ${APP_URL:-http://localhost}
+      DB_CONNECTION: mysql
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_DATABASE: ${DB_DATABASE:-laravel}
+      DB_USERNAME: ${DB_USERNAME:-laravel}
+      DB_PASSWORD: ${DB_PASSWORD:-secret}
+      REDIS_HOST: redis
+      REDIS_PASSWORD: "null"
+      REDIS_PORT: 6379
+      SESSION_DRIVER: redis
+      CACHE_STORE: redis
+      QUEUE_CONNECTION: redis
+      RUN_MIGRATIONS: "false"
+      SANCTUM_STATEFUL_DOMAINS: ${SANCTUM_STATEFUL_DOMAINS:-localhost}
+      SESSION_DOMAIN: ${SESSION_DOMAIN:-localhost}
+      LOG_CHANNEL: stack
+      LOG_LEVEL: ${LOG_LEVEL:-warning}
+    volumes:
+      - app-storage:/var/www/storage
+      - app-public:/var/www/public
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      app1:
+        condition: service_healthy
+    networks:
+      - fiberroad
+    healthcheck:
+      test: ["CMD-SHELL", "php artisan about --only=environment > /dev/null 2>&1 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  app3:
+    image: ${IMAGE_NAME:-laravel-app:local}
+    container_name: fiberroad-app3
+    restart: unless-stopped
+    environment:
+      APP_ENV: production
+      APP_DEBUG: "false"
+      APP_KEY: ${APP_KEY}
+      APP_URL: ${APP_URL:-http://localhost}
+      DB_CONNECTION: mysql
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_DATABASE: ${DB_DATABASE:-laravel}
+      DB_USERNAME: ${DB_USERNAME:-laravel}
+      DB_PASSWORD: ${DB_PASSWORD:-secret}
+      REDIS_HOST: redis
+      REDIS_PASSWORD: "null"
+      REDIS_PORT: 6379
+      SESSION_DRIVER: redis
+      CACHE_STORE: redis
+      QUEUE_CONNECTION: redis
+      RUN_MIGRATIONS: "false"
+      SANCTUM_STATEFUL_DOMAINS: ${SANCTUM_STATEFUL_DOMAINS:-localhost}
+      SESSION_DOMAIN: ${SESSION_DOMAIN:-localhost}
+      LOG_CHANNEL: stack
+      LOG_LEVEL: ${LOG_LEVEL:-warning}
+    volumes:
+      - app-storage:/var/www/storage
+      - app-public:/var/www/public
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      app1:
+        condition: service_healthy
+    networks:
+      - fiberroad
+    healthcheck:
       test: ["CMD-SHELL", "php artisan about --only=environment > /dev/null 2>&1 || exit 1"]
       interval: 10s
       timeout: 5s
@@ -74,7 +161,7 @@ services:
       start_period: 30s
 
   horizon:
-    image: ${IMAGE_NAME:-mtaher3toani/laravel-app:latest}
+    image: ${IMAGE_NAME:-laravel-app:local}
     container_name: fiberroad-horizon
     restart: unless-stopped
     environment:
@@ -99,7 +186,7 @@ services:
     volumes:
       - app-storage:/var/www/storage
     depends_on:
-      app:
+      app1:
         condition: service_healthy
       mysql:
         condition: service_healthy
@@ -180,8 +267,7 @@ services:
     image: gcr.io/cadvisor/cadvisor:latest
     container_name: fiberroad-cadvisor
     restart: unless-stopped
-    ports:
-      - "8081:8080"
+
     volumes:
       - /:/rootfs:ro
       - /var/run:/var/run:ro

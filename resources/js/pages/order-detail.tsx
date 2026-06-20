@@ -36,7 +36,7 @@ export default function OrderDetail({ order }: OrderDetailProps) {
         </Badge>
       </div>
 
-      {/* Timeline */}
+      
       <div className="mb-8 rounded-xl border border-border bg-card p-6">
         <div className="flex items-center justify-between">
           {STATUS_STEPS.map((step, i) => (
@@ -54,7 +54,7 @@ export default function OrderDetail({ order }: OrderDetailProps) {
         </div>
       </div>
 
-      {/* Items */}
+      
       <div className="mb-8 rounded-xl border border-border bg-card p-6">
         <h2 className="mb-4 font-semibold text-card-foreground">Items</h2>
         <div className="space-y-4">
@@ -71,7 +71,7 @@ export default function OrderDetail({ order }: OrderDetailProps) {
         </div>
       </div>
 
-      {/* Summary */}
+      
       <div className="rounded-xl border border-border bg-card p-6">
         <h2 className="mb-4 font-semibold text-card-foreground">Summary</h2>
         <div className="space-y-2 text-sm">

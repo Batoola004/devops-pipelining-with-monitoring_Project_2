@@ -18,7 +18,7 @@ class HealthController extends Controller
             'env' => config('app.env'),
         ];
 
-        // Check database connectivity
+        
         try {
             DB::connection()->getPdo();
             $data['database'] = 'connected';
@@ -27,7 +27,7 @@ class HealthController extends Controller
             $status = 503;
         }
 
-        // Check cache connectivity
+        
         try {
             Cache::store(config('cache.default'))->get('health-check-test');
             $data['cache'] = 'connected';

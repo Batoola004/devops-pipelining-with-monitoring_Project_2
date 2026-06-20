@@ -58,7 +58,7 @@ export default function MegaMenu({ categories, onClose }: MegaMenuProps) {
       onMouseLeave={onClose}
     >
       <div className="mx-auto grid max-w-7xl grid-cols-4 gap-8 px-8 py-10">
-        {/* Column 1: Parent Categories */}
+        
         <div>
           <h4 className="mb-4 font-mono text-xs font-semibold uppercase tracking-wider text-muted-foreground">
             Categories
@@ -82,7 +82,7 @@ export default function MegaMenu({ categories, onClose }: MegaMenuProps) {
           </ul>
         </div>
 
-        {/* Column 2: Sub-categories */}
+        
         <div>
           <h4 className="mb-4 font-mono text-xs font-semibold uppercase tracking-wider text-muted-foreground">
             Subcategories
@@ -102,7 +102,7 @@ export default function MegaMenu({ categories, onClose }: MegaMenuProps) {
           </ul>
         </div>
 
-        {/* Column 3: Brands + Quick Links */}
+        
         <div>
           <h4 className="mb-4 font-mono text-xs font-semibold uppercase tracking-wider text-muted-foreground">
             Brands
@@ -149,7 +149,7 @@ export default function MegaMenu({ categories, onClose }: MegaMenuProps) {
           </div>
         </div>
 
-        {/* Column 4: Promo Banner */}
+        
         <div className="flex flex-col justify-end rounded-lg bg-surface p-6 text-white">
           <p className="mb-1 font-mono text-xs font-semibold uppercase tracking-wider text-primary">Limited Offer</p>
           <h3 className="mb-2 text-2xl font-semibold">Summer Sale</h3>

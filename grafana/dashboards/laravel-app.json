@@ -25,7 +25,7 @@
       "datasource": { "type": "prometheus" },
       "targets": [
         {
-          "expr": "laravel_app_info",
+          "expr": "max by (version, env) (laravel_app_info)",
           "legendFormat": "v{{ labels.version }} - {{ labels.env }}",
           "refId": "A"
         }
@@ -61,7 +61,7 @@
       "datasource": { "type": "prometheus" },
       "targets": [
         {
-          "expr": "laravel_app_uptime_seconds",
+          "expr": "max(laravel_app_uptime_seconds)",
           "legendFormat": "Uptime",
           "refId": "A"
         }
@@ -104,7 +104,7 @@
       "datasource": { "type": "prometheus" },
       "targets": [
         {
-          "expr": "laravel_app_requests_total",
+          "expr": "sum(laravel_app_requests_total)",
           "legendFormat": "Requests",
           "refId": "A"
         }
@@ -140,7 +140,7 @@
       "datasource": { "type": "prometheus" },
       "targets": [
         {
-          "expr": "laravel_app_response_time_ms",
+          "expr": "avg(laravel_app_response_time_ms)",
           "legendFormat": "Response Time",
           "refId": "A"
         }
@@ -184,7 +184,7 @@
       "datasource": { "type": "prometheus" },
       "targets": [
         {
-          "expr": "laravel_app_memory_bytes",
+          "expr": "max(laravel_app_memory_bytes)",
           "legendFormat": "Memory",
           "refId": "A"
         }
@@ -227,7 +227,7 @@
       "datasource": { "type": "prometheus" },
       "targets": [
         {
-          "expr": "laravel_app_storage_used_percent",
+          "expr": "max(laravel_app_storage_used_percent)",
           "legendFormat": "Storage",
           "refId": "A"
         }
@@ -271,7 +271,7 @@
       "datasource": { "type": "prometheus" },
       "targets": [
         {
-          "expr": "laravel_app_response_time_ms",
+          "expr": "avg(laravel_app_response_time_ms)",
           "legendFormat": "Response Time",
           "refId": "A"
         }
@@ -331,7 +331,7 @@
       "datasource": { "type": "prometheus" },
       "targets": [
         {
-          "expr": "laravel_app_requests_total",
+          "expr": "sum(laravel_app_requests_total)",
           "legendFormat": "Total Requests",
           "refId": "A"
         }
@@ -384,7 +384,7 @@
       "datasource": { "type": "prometheus" },
       "targets": [
         {
-          "expr": "laravel_app_memory_bytes",
+          "expr": "avg(laravel_app_memory_bytes)",
           "legendFormat": "Memory",
           "refId": "A"
         }
@@ -444,7 +444,7 @@
       "datasource": { "type": "prometheus" },
       "targets": [
         {
-          "expr": "laravel_app_storage_used_percent",
+          "expr": "max(laravel_app_storage_used_percent)",
           "legendFormat": "Storage Used",
           "refId": "A"
         }
@@ -513,7 +513,7 @@
       "datasource": { "type": "prometheus" },
       "targets": [
         {
-          "expr": "laravel_app_database_up",
+          "expr": "max(laravel_app_database_up)",
           "legendFormat": "Database",
           "refId": "A"
         }
@@ -557,7 +557,7 @@
       "datasource": { "type": "prometheus" },
       "targets": [
         {
-          "expr": "laravel_app_cache_store",
+          "expr": "max by (driver) (laravel_app_cache_store)",
           "legendFormat": "Cache",
           "refId": "A"
         }
@@ -594,7 +594,7 @@
       "datasource": { "type": "prometheus" },
       "targets": [
         {
-          "expr": "laravel_app_queue_connection",
+          "expr": "max by (driver) (laravel_app_queue_connection)",
           "legendFormat": "Queue",
           "refId": "A"
         }
@@ -631,7 +631,7 @@
       "datasource": { "type": "prometheus" },
       "targets": [
         {
-          "expr": "laravel_app_info",
+          "expr": "max by (version, env) (laravel_app_info)",
           "legendFormat": "v{{ labels.version }} - {{ labels.env }}",
           "refId": "A"
         }
@@ -666,7 +666,7 @@
       "datasource": { "type": "prometheus" },
       "targets": [
         {
-          "expr": "laravel_app_php_version_info",
+          "expr": "max by (version) (laravel_app_php_version_info)",
           "legendFormat": "PHP {{ labels.version }}",
           "refId": "A"
         }
@@ -699,7 +699,7 @@
       "datasource": { "type": "prometheus" },
       "targets": [
         {
-          "expr": "laravel_app_http_requests_by_method",
+          "expr": "sum by (method) (laravel_app_http_requests_by_method)",
           "legendFormat": "{{ labels.method }}",
           "refId": "A"
         }
@@ -735,7 +735,7 @@
       "datasource": { "type": "prometheus" },
       "targets": [
         {
-          "expr": "laravel_app_http_requests_by_status",
+          "expr": "sum by (status_group) (laravel_app_http_requests_by_status)",
           "legendFormat": "{{ labels.status_group }}",
           "refId": "A"
         }
@@ -779,7 +779,7 @@
       "datasource": { "type": "prometheus" },
       "targets": [
         {
-          "expr": "laravel_app_http_requests_by_method",
+          "expr": "sum by (method) (laravel_app_http_requests_by_method)",
           "legendFormat": "{{ labels.method }}",
           "refId": "A"
         }
@@ -832,7 +832,7 @@
       "datasource": { "type": "prometheus" },
       "targets": [
         {
-          "expr": "laravel_app_http_requests_by_status",
+          "expr": "sum by (status_group) (laravel_app_http_requests_by_status)",
           "legendFormat": "{{ labels.status_group }}",
           "refId": "A"
         }
@@ -874,6 +874,110 @@
           "showLegend": true
         },
         "tooltip": { "mode": "multi", "sort": "none" }
+      },
+      "pluginVersion": "13.0.2"
+    },
+    {
+      "id": 22,
+      "title": "Load Balancing",
+      "type": "row",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 38 },
+      "collapsed": false,
+      "panels": []
+    },
+    {
+      "id": 23,
+      "title": "Load Balanced Instances",
+      "type": "piechart",
+      "gridPos": { "h": 9, "w": 12, "x": 0, "y": 39 },
+      "datasource": { "type": "prometheus" },
+      "targets": [
+        {
+          "expr": "count by (app_instance) (laravel_app_uptime_seconds)",
+          "legendFormat": "{{ app_instance }}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": {},
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "value": null, "color": "green" }] }
+        },
+        "overrides": [
+          {
+            "matcher": { "id": "byRegexp", "options": "/app1/" },
+            "properties": [{ "id": "color", "value": { "fixedColor": "#4361ee", "mode": "fixed" } }]
+          },
+          {
+            "matcher": { "id": "byRegexp", "options": "/app2/" },
+            "properties": [{ "id": "color", "value": { "fixedColor": "#2d6a4f", "mode": "fixed" } }]
+          },
+          {
+            "matcher": { "id": "byRegexp", "options": "/app3/" },
+            "properties": [{ "id": "color", "value": { "fixedColor": "#e65100", "mode": "fixed" } }]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true
+        },
+        "reduceOptions": { "values": false, "calcs": ["lastNotNull"], "fields": "" },
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "pieType": "pie",
+        "displayLabels": ["name", "percent"]
+      },
+      "pluginVersion": "13.0.2"
+    },
+    {
+      "id": 24,
+      "title": "Request Distribution",
+      "type": "piechart",
+      "gridPos": { "h": 9, "w": 12, "x": 12, "y": 39 },
+      "datasource": { "type": "prometheus" },
+      "targets": [
+        {
+          "expr": "sum by (app_instance) (laravel_app_requests_total)",
+          "legendFormat": "{{ app_instance }}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": {},
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "value": null, "color": "green" }] }
+        },
+        "overrides": [
+          {
+            "matcher": { "id": "byRegexp", "options": "/app1/" },
+            "properties": [{ "id": "color", "value": { "fixedColor": "#4361ee", "mode": "fixed" } }]
+          },
+          {
+            "matcher": { "id": "byRegexp", "options": "/app2/" },
+            "properties": [{ "id": "color", "value": { "fixedColor": "#2d6a4f", "mode": "fixed" } }]
+          },
+          {
+            "matcher": { "id": "byRegexp", "options": "/app3/" },
+            "properties": [{ "id": "color", "value": { "fixedColor": "#e65100", "mode": "fixed" } }]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true
+        },
+        "reduceOptions": { "values": false, "calcs": ["lastNotNull"], "fields": "" },
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "pieType": "pie",
+        "displayLabels": ["name", "value", "percent"]
       },
       "pluginVersion": "13.0.2"
     }

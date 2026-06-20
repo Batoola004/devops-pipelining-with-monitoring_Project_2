@@ -97,7 +97,7 @@ export default function Header() {
       }`}
     >
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        {/* Left: Logo + Mobile Menu */}
+        
         <div className="flex items-center gap-4 self-stretch">
           <button onClick={toggleMobileNav} className="lg:hidden">
             <Menu className="h-6 w-6 text-muted-foreground" />
@@ -111,7 +111,7 @@ export default function Header() {
             <span className="text-xl font-bold text-foreground">FiberRoad</span>
           </Link>
 
-          {/* Desktop Nav */}
+          
           <nav className="ml-8 hidden h-full items-stretch gap-1 lg:flex">
             <Link
               href="/"
@@ -134,9 +134,9 @@ export default function Header() {
           </nav>
         </div>
 
-        {/* Right: Search + Icons */}
+        
         <div className="flex items-center gap-2 sm:gap-3">
-          {/* Search */}
+          
           <div ref={searchRef} className="relative hidden sm:block">
             <form onSubmit={handleSearchSubmit}>
               <div className="relative">
@@ -154,12 +154,12 @@ export default function Header() {
             {searchOpen && <SearchDropdown />}
           </div>
 
-          {/* Theme Toggle */}
+          
           <Button variant="ghost" size="icon" onClick={toggleTheme} className="text-muted-foreground">
             {dark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
           </Button>
 
-          {/* Wishlist */}
+          
           {isAuthenticated && (
             <Link href={ROUTES.WISHLIST} className="relative">
               <Button variant="ghost" size="icon" className="text-muted-foreground">
@@ -168,7 +168,7 @@ export default function Header() {
             </Link>
           )}
 
-          {/* Cart */}
+          
           <div
             ref={cartPreviewRef}
             className="relative"
@@ -218,7 +218,7 @@ export default function Header() {
             )}
           </div>
 
-          {/* User Menu */}
+          
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon" className="text-muted-foreground">
@@ -256,7 +256,7 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Mega Menu — full width below header bar */}
+      
       <div
         onMouseEnter={openMega}
         onMouseLeave={closeMega}
