@@ -1,11 +1,15 @@
 #!/bin/bash
 set -e
 
-# Run Laravel optimizations on container start
+
 if [ -f /var/www/artisan ]; then
     echo ">>> Running Laravel optimizations..."
 
-    # Seed server start time in cache for the uptime metric
+
+
+    php artisan optimize:clear --no-interaction 2>/dev/null || true
+
+
     echo ">>> Setting server start time..."
     php -r "
         \$app = require '/var/www/bootstrap/app.php';
@@ -15,15 +19,12 @@ if [ -f /var/www/artisan ]; then
         echo 'Server start time set to ' . time() . PHP_EOL;
     " 2>&1 || echo ">>> WARNING: Failed to set server start time" >&2
 
-    # Clear any cached config/routes/views from previous builds
-    php artisan optimize:clear --no-interaction 2>/dev/null || true
 
-    # Cache config, routes, and views for production performance
     php artisan config:cache --no-interaction 2>/dev/null || true
     php artisan route:cache --no-interaction 2>/dev/null || true
     php artisan view:cache --no-interaction 2>/dev/null || true
 
-    # Wait for database to be ready before running migrations
+
     if [ "${RUN_MIGRATIONS}" = "true" ]; then
         echo ">>> Waiting for database connection..."
         MAX_RETRIES=30
@@ -47,5 +48,5 @@ if [ -f /var/www/artisan ]; then
     echo ">>> Laravel optimizations complete."
 fi
 
-# Execute the CMD (php-fpm)
+
 exec "$@"

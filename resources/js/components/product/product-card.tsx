@@ -66,7 +66,7 @@ export default function ProductCard({ product, isNew }: ProductCardProps) {
       href={`/products/${product.slug}`}
       className="group block overflow-hidden rounded-xl border border-border bg-card transition-all duration-300 hover:-translate-y-1 hover:border-primary/20 hover:shadow-xl"
     >
-      {/* Image container — 1:1 */}
+      
       <div className="relative aspect-square overflow-hidden bg-muted">
         {defaultImg && !imgErr ? (
           <>
@@ -97,7 +97,7 @@ export default function ProductCard({ product, isNew }: ProductCardProps) {
           </div>
         )}
 
-        {/* Badges */}
+        
         <div className="absolute left-3 top-3 flex flex-col gap-1.5">
           {discount > 0 && (
             <span className="rounded-full bg-primary px-2.5 py-1 font-mono text-[11px] font-bold text-primary-foreground shadow-sm">
@@ -119,7 +119,7 @@ export default function ProductCard({ product, isNew }: ProductCardProps) {
           </div>
         )}
 
-        {/* Wishlist */}
+        
         <button
           onClick={handleToggleWishlist}
           className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-background text-foreground shadow-sm transition-colors hover:bg-muted"
@@ -127,7 +127,7 @@ export default function ProductCard({ product, isNew }: ProductCardProps) {
           <Heart className={`h-4 w-4 ${isWishlisted ? 'fill-red-500 text-red-500' : ''}`} />
         </button>
 
-        {/* Quick-add on hover (authenticated only) */}
+        
         {product.has_stock && isAuthenticated && (
           <div className="absolute bottom-0 left-0 right-0 translate-y-full p-3 transition-transform duration-300 group-hover:translate-y-0">
             <Button onClick={handleAddToCart} className="w-full text-xs shadow-lg" size="sm">
@@ -137,7 +137,7 @@ export default function ProductCard({ product, isNew }: ProductCardProps) {
         )}
       </div>
 
-      {/* Info */}
+      
       <div className="p-4">
         {product.category && (
           <p className="mb-1 font-mono text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
@@ -148,7 +148,7 @@ export default function ProductCard({ product, isNew }: ProductCardProps) {
           {product.name}
         </h3>
 
-        {/* Rating */}
+        
         {product.reviews_avg_rating != null && product.reviews_avg_rating > 0 && (
           <div className="mt-1.5 flex items-center gap-1.5">
             <Stars rating={product.reviews_avg_rating} />
@@ -158,7 +158,7 @@ export default function ProductCard({ product, isNew }: ProductCardProps) {
           </div>
         )}
 
-        {/* Price */}
+        
         <div className="mt-2 flex items-center gap-2">
           <span className="font-mono text-lg font-semibold text-foreground">
             ${Number(product.price).toFixed(2)}
@@ -170,7 +170,7 @@ export default function ProductCard({ product, isNew }: ProductCardProps) {
           )}
         </div>
 
-        {/* Guest login CTA */}
+        
         {product.has_stock && !isAuthenticated && (
           <Link
             href={ROUTES.LOGIN}

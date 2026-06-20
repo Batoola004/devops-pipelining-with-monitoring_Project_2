@@ -52,7 +52,7 @@ export default function Home({ featuredProducts, categories, newProducts }: Home
     <>
       <Head title="FiberRoad — Your Electronics Destination" />
 
-      {/* Hero Carousel */}
+      
       <section className="relative overflow-hidden bg-surface">
         <div className="relative mx-auto max-w-7xl">
           {slides.map((slide, i) => (
@@ -85,7 +85,7 @@ export default function Home({ featuredProducts, categories, newProducts }: Home
             </div>
           ))}
 
-          {/* Dots */}
+          
           <div className="absolute bottom-6 left-1/2 flex -translate-x-1/2 gap-2">
             {slides.map((_, i) => (
               <button
@@ -99,7 +99,7 @@ export default function Home({ featuredProducts, categories, newProducts }: Home
           </div>
         </div>
 
-        {/* Nav arrows — outside content container so they don't overlap text */}
+        
         <button onClick={prevSlide} className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full bg-white/10 p-2 text-white backdrop-blur-sm transition-colors hover:bg-white/20 sm:left-6 lg:left-10">
           <ChevronLeft className="h-5 w-5 sm:h-6 sm:w-6" />
         </button>
@@ -108,7 +108,7 @@ export default function Home({ featuredProducts, categories, newProducts }: Home
         </button>
       </section>
 
-      {/* Category Tiles */}
+      
       <section className="py-section px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="mb-10 text-center">
@@ -137,7 +137,7 @@ export default function Home({ featuredProducts, categories, newProducts }: Home
         </div>
       </section>
 
-      {/* Trending Now */}
+      
       {featuredProducts?.length > 0 && (
         <section className="bg-muted/50 py-section">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -161,7 +161,7 @@ export default function Home({ featuredProducts, categories, newProducts }: Home
         </section>
       )}
 
-      {/* Recommended for You */}
+      
       {newProducts?.length > 0 && (
         <section className="py-section px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-7xl">
@@ -178,7 +178,7 @@ export default function Home({ featuredProducts, categories, newProducts }: Home
         </section>
       )}
 
-      {/* Features */}
+      
       <section className="border-t border-border bg-card py-section">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">

@@ -63,7 +63,6 @@ export default function Shop({ initialProducts, categories, category, minPrice, 
   const [loading, setLoading] = useState(false)
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false)
 
-  // Filters
   const [selectedCategory, setSelectedCategory] = useState(category?.slug ?? '')
   const [priceMin, setPriceMin] = useState('')
   const [priceMax, setPriceMax] = useState('')
@@ -76,7 +75,6 @@ export default function Shop({ initialProducts, categories, category, minPrice, 
   const [searchQuery, setSearchQuery] = useState(initialBrand ? '' : (initialSearch || ''))
   const [selectedBrand, setSelectedBrand] = useState(initialBrand)
 
-  // API base URL
   const apiBase = '/api/products'
 
   const buildParams = useCallback(() => {
@@ -103,7 +101,6 @@ export default function Shop({ initialProducts, categories, category, minPrice, 
       setProducts(data.data ?? [])
       setMeta(data.meta ?? { current_page: 1, last_page: 1, total: 0 })
     } catch {
-      // fallback
     } finally {
       setLoading(false)
     }
@@ -138,7 +135,7 @@ export default function Shop({ initialProducts, categories, category, minPrice, 
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       <Head title={category ? `${category.name} — FiberRoad` : 'Shop Electronics — FiberRoad'} />
 
-      {/* Page header */}
+      
       <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-3xl font-semibold text-foreground">
@@ -147,7 +144,7 @@ export default function Shop({ initialProducts, categories, category, minPrice, 
           <p className="mt-1 text-sm text-muted-foreground">{meta.total} products found</p>
         </div>
         <div className="flex items-center gap-3">
-          {/* Search input */}
+          
           <div className="relative hidden sm:block">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <input
@@ -158,7 +155,7 @@ export default function Shop({ initialProducts, categories, category, minPrice, 
               className="h-10 w-56 rounded-lg border border-border bg-card pl-9 pr-4 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:border-primary"
             />
           </div>
-          {/* Sort */}
+          
           <div className="relative">
             <select
               value={sort}
@@ -171,14 +168,14 @@ export default function Shop({ initialProducts, categories, category, minPrice, 
             </select>
             <ArrowUpDown className="pointer-events-none absolute right-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           </div>
-          {/* Mobile filter toggle */}
+          
           <Button variant="outline" className="lg:hidden" onClick={() => setMobileFilterOpen(true)}>
             <SlidersHorizontal className="mr-2 h-4 w-4" /> Filters
           </Button>
         </div>
       </div>
 
-      {/* Active filter chips */}
+      
       {activeFilters.length > 0 && (
         <div className="mb-6 flex flex-wrap items-center gap-2">
           {activeFilters.map((f, i) => (
@@ -196,10 +193,10 @@ export default function Shop({ initialProducts, categories, category, minPrice, 
       )}
 
       <div className="flex gap-8">
-        {/* Desktop sidebar */}
+        
         <aside className="hidden w-72 flex-shrink-0 lg:block">
           <div className="sticky top-24 space-y-6 rounded-xl border border-border bg-card p-6">
-            {/* Categories */}
+            
             <div>
               <h4 className="mb-3 font-mono text-xs font-semibold uppercase tracking-wider text-muted-foreground">Categories</h4>
               <ul className="space-y-1">
@@ -239,7 +236,7 @@ export default function Shop({ initialProducts, categories, category, minPrice, 
 
             <hr className="border-border" />
 
-            {/* Price Range */}
+            
             <div>
               <h4 className="mb-3 font-mono text-xs font-semibold uppercase tracking-wider text-muted-foreground">Price Range</h4>
               <div className="flex items-center gap-2">
@@ -265,7 +262,7 @@ export default function Shop({ initialProducts, categories, category, minPrice, 
 
             <hr className="border-border" />
 
-            {/* Availability */}
+            
             <div>
               <h4 className="mb-3 font-mono text-xs font-semibold uppercase tracking-wider text-muted-foreground">Availability</h4>
               <label className="flex cursor-pointer items-center gap-2.5 text-sm text-foreground">
@@ -281,7 +278,7 @@ export default function Shop({ initialProducts, categories, category, minPrice, 
 
             <hr className="border-border" />
 
-            {/* Brands — only show when a category is selected */}
+            
             {selectedCategory && (
               <>
                 <hr className="border-border" />
@@ -308,7 +305,7 @@ export default function Shop({ initialProducts, categories, category, minPrice, 
           </div>
         </aside>
 
-        {/* Mobile filter drawer */}
+        
         {mobileFilterOpen && (
           <div className="fixed inset-0 z-50 lg:hidden">
             <div className="absolute inset-0 bg-foreground/50 backdrop-blur-sm" onClick={() => setMobileFilterOpen(false)} />
@@ -319,7 +316,7 @@ export default function Shop({ initialProducts, categories, category, minPrice, 
                   <X className="h-5 w-5" />
                 </button>
               </div>
-              {/* Mobile search */}
+              
               <div className="relative mb-4">
                 <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <input
@@ -330,7 +327,7 @@ export default function Shop({ initialProducts, categories, category, minPrice, 
                   className="h-10 w-full rounded-lg border border-border bg-card pl-9 pr-4 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:border-primary"
                 />
               </div>
-              {/* Categories */}
+              
               <div className="mb-4">
                 <h4 className="mb-2 font-mono text-xs font-semibold uppercase tracking-wider text-muted-foreground">Categories</h4>
                 <div className="flex flex-wrap gap-2">
@@ -352,7 +349,7 @@ export default function Shop({ initialProducts, categories, category, minPrice, 
                   ))}
                 </div>
               </div>
-              {/* Price */}
+              
               <div className="mb-4">
                 <h4 className="mb-2 font-mono text-xs font-semibold uppercase tracking-wider text-muted-foreground">Price</h4>
                 <div className="flex items-center gap-2">
@@ -363,7 +360,7 @@ export default function Shop({ initialProducts, categories, category, minPrice, 
                     className="h-9 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground outline-none focus:border-primary" min={0} />
                 </div>
               </div>
-              {/* Availability */}
+              
               <div className="mb-4">
                 <label className="flex cursor-pointer items-center gap-2.5 text-sm text-foreground">
                   <input type="checkbox" checked={inStockOnly} onChange={(e) => setInStockOnly(e.target.checked)}
@@ -371,7 +368,7 @@ export default function Shop({ initialProducts, categories, category, minPrice, 
                   In Stock Only
                 </label>
               </div>
-              {/* Brands — only show when a category is selected */}
+              
               {selectedCategory && (
                 <div className="mb-6">
                   <h4 className="mb-2 font-mono text-xs font-semibold uppercase tracking-wider text-muted-foreground">Brands</h4>
@@ -397,7 +394,7 @@ export default function Shop({ initialProducts, categories, category, minPrice, 
           </div>
         )}
 
-        {/* Results area */}
+        
         <div className="flex-1">
           {loading ? (
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
@@ -429,7 +426,7 @@ export default function Shop({ initialProducts, categories, category, minPrice, 
                 ))}
               </div>
 
-              {/* Pagination */}
+              
               {meta.last_page > 1 && (
                 <div className="mt-10 flex items-center justify-center gap-2">
                   <button

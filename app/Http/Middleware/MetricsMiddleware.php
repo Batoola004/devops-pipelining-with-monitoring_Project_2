@@ -19,6 +19,7 @@ class MetricsMiddleware
         $duration = (microtime(true) - $start) * 1000;
 
         try {
+            
             if (!str_contains($request->path(), 'metrics')) {
                 $this->trackRequest($request, $response, $duration);
             }
@@ -31,21 +32,20 @@ class MetricsMiddleware
 
     private function trackRequest(Request $request, Response $response, float $durationMs): void
     {
+        
         Cache::increment('metrics:request_count');
 
+        
         $count = Cache::get('metrics:request_count', 0);
         $currentAvg = Cache::get('metrics:avg_response_time_ms', 0);
-
         $newAvg = $currentAvg + ($durationMs - $currentAvg) / max(1, min($count, 1000));
-
         Cache::forever('metrics:avg_response_time_ms', round($newAvg, 2));
 
+        
+        Cache::increment('metrics:requests_by_method:' . strtolower($request->method()));
 
-        $method = strtolower($request->method());
-        Cache::increment('metrics:requests_by_method:' . $method);
-
-        $statusCode = $response->getStatusCode();
-        $statusGroup = (int) ($statusCode / 100) . 'xx';
+        
+        $statusGroup = (int) ($response->getStatusCode() / 100) . 'xx';
         Cache::increment('metrics:requests_by_status:' . $statusGroup);
     }
 }

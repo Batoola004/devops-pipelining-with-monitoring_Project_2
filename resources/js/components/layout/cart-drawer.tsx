@@ -20,7 +20,7 @@ export default function CartDrawer() {
     <div className="fixed inset-0 z-50">
       <div className="fixed inset-0 bg-foreground/40 backdrop-blur-sm" onClick={closeDrawer} />
       <div className="fixed inset-y-0 right-0 flex w-full max-w-md flex-col border-l border-border bg-background shadow-xl">
-        {/* Header */}
+        
         <div className="flex items-center justify-between border-b border-border px-6 py-4">
           <div className="flex items-center gap-2">
             <ShoppingBag className="h-5 w-5 text-foreground" />
@@ -31,7 +31,7 @@ export default function CartDrawer() {
           </button>
         </div>
 
-        {/* Body */}
+        
         <div className="flex-1 overflow-y-auto px-6 py-4">
           {isLoading ? (
             <div className="space-y-4 pt-4">
@@ -108,7 +108,7 @@ export default function CartDrawer() {
           )}
         </div>
 
-        {/* Footer */}
+        
         {hasItems && (
           <div className="border-t border-border px-6 py-4">
             <div className="mb-1 flex justify-between text-sm">

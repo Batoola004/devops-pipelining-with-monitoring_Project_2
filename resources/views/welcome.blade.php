@@ -21,11 +21,11 @@
 </head>
 <body class="bg-gray-50 text-gray-900 antialiased">
 
-{{-- Navigation --}}
+
 <nav class="bg-white border-b border-gray-200 sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16">
-            {{-- Logo --}}
+            
             <a href="/" class="flex items-center space-x-2">
                 <svg class="w-8 h-8 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M12 2L2 7l10 5 10-5-10-5z"/>
@@ -35,14 +35,14 @@
                 <span class="text-xl font-bold text-gray-900">FiberRoad</span>
             </a>
 
-            {{-- Nav Links --}}
+            
             <div class="hidden md:flex items-center space-x-8">
                 <a href="/" class="text-gray-600 hover:text-blue-600 font-medium transition">Home</a>
                 <a href="{{ route('products.index') }}" class="text-gray-600 hover:text-blue-600 font-medium transition">Shop</a>
                 <a href="#categories" class="text-gray-600 hover:text-blue-600 font-medium transition">Categories</a>
             </div>
 
-            {{-- Actions --}}
+            
             <div class="flex items-center space-x-4">
                 <a href="{{ route('products.index') }}" class="btn btn-primary text-sm">
                     Start Shopping
@@ -52,7 +52,7 @@
     </div>
 </nav>
 
-{{-- Hero Section --}}
+
 <section class="relative bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-900 text-white overflow-hidden">
     <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIvPjwvZz48L2c+PC9zdmc+')] opacity-50"></div>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32 relative">
@@ -77,7 +77,7 @@
     </div>
 </section>
 
-{{-- Categories Section --}}
+
 <section id="categories" class="py-16 lg:py-20">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-12">
@@ -101,7 +101,7 @@
     </div>
 </section>
 
-{{-- Featured Products --}}
+
 @if($featuredProducts->isNotEmpty())
 <section class="py-16 lg:py-20 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -143,7 +143,7 @@
             @endforeach
         </div>
 
-        {{-- Mobile view all --}}
+        
         <div class="mt-8 text-center sm:hidden">
             <a href="{{ route('products.index') }}" class="btn btn-outline">View All Products</a>
         </div>
@@ -151,7 +151,7 @@
 </section>
 @endif
 
-{{-- New Arrivals --}}
+
 @if($newProducts->isNotEmpty())
 <section class="py-16 lg:py-20">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -185,7 +185,7 @@
 </section>
 @endif
 
-{{-- Features Section --}}
+
 <section class="py-16 bg-white border-t border-gray-100">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -229,7 +229,7 @@
     </div>
 </section>
 
-{{-- Footer --}}
+
 <footer class="bg-gray-900 text-gray-300 py-12">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">

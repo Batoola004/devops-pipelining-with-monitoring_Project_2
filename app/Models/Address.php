@@ -10,7 +10,7 @@ class Address extends Model
 {
     use HasFactory;
 
-    //just adding shi so i can test the git commit hook
+    
     protected $fillable = [
         'user_id',
         'label',

@@ -20,7 +20,7 @@
 </head>
 <body class="bg-gray-50 text-gray-900 antialiased">
 
-{{-- Navigation --}}
+
 <nav class="bg-white border-b border-gray-200 sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16">
@@ -38,7 +38,7 @@
     </div>
 </nav>
 
-{{-- Page Header --}}
+
 <section class="bg-white border-b border-gray-200">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -52,11 +52,11 @@
     </div>
 </section>
 
-{{-- Main Content --}}
+
 <section class="py-8">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex gap-8">
-            {{-- Sidebar Filters --}}
+            
             <aside class="hidden lg:block w-64 flex-shrink-0">
                 <div class="bg-white rounded-xl border border-gray-200 p-6 sticky top-24">
                     <h3 class="font-semibold text-gray-900 mb-4">Categories</h3>
@@ -80,7 +80,7 @@
                 </div>
             </aside>
 
-            {{-- Product Grid --}}
+            
             <div class="flex-1">
                 @if($products->isEmpty())
                     <div class="text-center py-20">
@@ -123,7 +123,7 @@
                         @endforeach
                     </div>
 
-                    {{-- Pagination --}}
+                    
                     <div class="mt-10">
                         {{ $products->links() }}
                     </div>
@@ -133,7 +133,7 @@
     </div>
 </section>
 
-{{-- Footer --}}
+
 <footer class="bg-gray-900 text-gray-300 py-12 mt-8">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between">

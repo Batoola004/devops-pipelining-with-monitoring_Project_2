@@ -20,7 +20,7 @@
 </head>
 <body class="bg-gray-50 text-gray-900 antialiased">
 
-{{-- Navigation --}}
+
 <nav class="bg-white border-b border-gray-200 sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16">
@@ -38,7 +38,7 @@
     </div>
 </nav>
 
-{{-- Breadcrumb --}}
+
 <section class="bg-white border-b border-gray-200">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
         <div class="flex items-center space-x-2 text-sm text-gray-500">
@@ -55,12 +55,12 @@
     </div>
 </section>
 
-{{-- Product Detail --}}
+
 <section class="py-8 lg:py-12">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
 
-            {{-- Product Image --}}
+            
             <div class="aspect-square bg-gray-100 rounded-2xl flex items-center justify-center relative overflow-hidden">
                 <div class="text-gray-300">
                     <svg class="w-24 h-24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -72,7 +72,7 @@
                 @endif
             </div>
 
-            {{-- Product Info --}}
+            
             <div class="flex flex-col">
                 @if($product->category)
                     <p class="text-sm text-blue-600 font-semibold uppercase tracking-wider mb-2">{{ $product->category->name }}</p>
@@ -80,7 +80,7 @@
 
                 <h1 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">{{ $product->name }}</h1>
 
-                {{-- Price --}}
+                
                 <div class="flex items-center gap-3 mb-6">
                     <span class="text-3xl font-bold text-gray-900">${{ number_format($product->price, 2) }}</span>
                     @if($product->original_price)
@@ -91,7 +91,7 @@
                     @endif
                 </div>
 
-                {{-- Stock Status --}}
+                
                 <div class="flex items-center gap-2 mb-6">
                     @if($product->has_stock)
                         <span class="w-2.5 h-2.5 bg-green-500 rounded-full"></span>
@@ -102,18 +102,18 @@
                     @endif
                 </div>
 
-                {{-- Description --}}
+                
                 <div class="mb-8">
                     <h3 class="font-semibold text-gray-900 mb-2">Description</h3>
                     <p class="text-gray-600 leading-relaxed">{{ $product->description }}</p>
                 </div>
 
-                {{-- SKU --}}
+                
                 @if($product->sku)
                     <p class="text-sm text-gray-400 mb-4">SKU: {{ $product->sku }}</p>
                 @endif
 
-                {{-- Add to Cart --}}
+                
                 <div class="mt-auto pt-6 border-t border-gray-200">
                     <button type="button"
                             class="btn btn-primary w-full py-3 text-base {{ !$product->has_stock ? 'opacity-50 cursor-not-allowed' : '' }}"
@@ -129,7 +129,7 @@
     </div>
 </section>
 
-{{-- Related Products --}}
+
 @if($relatedProducts->isNotEmpty())
 <section class="py-12 bg-white border-t border-gray-100">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -157,7 +157,7 @@
 </section>
 @endif
 
-{{-- Footer --}}
+
 <footer class="bg-gray-900 text-gray-300 py-8">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between">
