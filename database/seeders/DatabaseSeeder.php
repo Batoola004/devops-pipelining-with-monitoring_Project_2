@@ -23,8 +23,15 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('password'),
         ]);
 
-        $this->command->info('👤 Admin user created (admin@fiberroad.com / password)');
+        $this->command->info('Admin user created (admin@fiberroad.com / password)');
 
-        $this->command->info('🎉 Database seeding complete!');
+        $this->call([
+            ReviewSeeder::class,
+            WishlistSeeder::class,
+            CartSeeder::class,
+            OrderSeeder::class,
+        ]);
+
+        $this->command->info('All seeders completed successfully!');
     }
 }
