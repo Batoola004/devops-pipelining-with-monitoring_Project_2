@@ -19,7 +19,7 @@ class ServerSecurityAnalyzerService
         ->retry(5, 1000)
         ->post('https://openrouter.ai/api/v1/chat/completions', [
             
-            'model' => 'poolside/laguna-xs.2:free', 
+            'model' => 'google/gemma-4-26b-a4b-it:free', 
             'messages' => [
                 [
                     'role' => 'system', 
