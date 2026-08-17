@@ -4,6 +4,13 @@ on:
   push:
     branches: ["main"]
 
+concurrency:
+  group: fiberroad-production-deploy
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
 env:
   DOCKER_IMAGE_NAME: batool004ma/laravel-app
 
@@ -18,7 +25,10 @@ jobs:
       - name: PHP Syntax Check
         run: |
           errors=$(find . -name "*.php" -not -path "./vendor/*" -not -path "./storage/*" -exec php -l {} \; 2>&1 | grep -v "^No syntax errors" || true)
-          if [ -n "$errors" ]; then echo "$errors"; exit 1; fi
+          if [ -n "$errors" ]; then
+            echo "$errors"
+            exit 1
+          fi
           echo "All PHP files passed syntax check."
 
   build:
@@ -53,29 +63,16 @@ jobs:
     name: Deploy to AWS VM
     runs-on: ubuntu-latest
     needs: build
+    timeout-minutes: 15
     steps:
-      - name: Deploy via SSH and verify
+      - name: Deploy via restricted SSH account and verify health
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.AWS_VM_HOST }}
           username: ${{ secrets.AWS_VM_USER }}
-          password: ${{ secrets.AWS_VM_PASSWORD }}
+          key: ${{ secrets.AWS_VM_SSH_KEY }}
+          port: 22
+          script_stop: true
+          command_timeout: 10m
           script: |
-            cd /opt/laravel-app
-            docker compose -f docker-compose.yml down
-            docker pull ${{ env.DOCKER_IMAGE_NAME }}:${{ github.sha }}
-            docker tag ${{ env.DOCKER_IMAGE_NAME }}:${{ github.sha }} ${{ env.DOCKER_IMAGE_NAME }}:latest
-            docker compose -f docker-compose.yml up -d --force-recreate
-            docker image prune -f
-            echo "Waiting for app to be healthy..."
-            for i in $(seq 1 12); do
-              status=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8000/health 2>/dev/null || echo "000")
-              if [ "$status" = "200" ]; then
-                echo "Health check passed: HTTP 200"
-                exit 0
-              fi
-              echo "Attempt $i: HTTP $status - waiting..."
-              sleep 10
-            done
-            echo "Health check failed after 12 attempts."
-            exit 1
+            sudo -n /usr/local/sbin/fiberroad-ci-deploy ${{ github.sha }}
