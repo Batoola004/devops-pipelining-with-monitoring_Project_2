@@ -7,8 +7,8 @@ on:
     branches: ["main", "dev"]
 
 env:
-  DOCKER_IMAGE_NAME: mtaher3toani/laravel-app
-  IMAGE_NAME: mtaher3toani/laravel-app:latest
+  DOCKER_IMAGE_NAME: batool004ma/laravel-app
+  IMAGE_NAME: batool004ma/laravel-app:latest
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

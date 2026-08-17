@@ -1,11 +1,8 @@
 #!/bin/bash
 set -e
 
-
 if [ -f /var/www/artisan ]; then
     echo ">>> Running Laravel optimizations..."
-
-
 
     php artisan optimize:clear --no-interaction 2>/dev/null || true
 
