@@ -106,6 +106,21 @@ class ProductSeeder extends Seeder
         ],
     ];
 
+    private const CATEGORY_IMAGES = [
+        'laptops-computers' => ['images/categories/laptops-computers-1.jpg', 'images/categories/laptops-computers-2.jpg', 'images/categories/laptops-computers-3.jpg', 'images/categories/laptops-computers-4.jpg', 'images/categories/laptops-computers-5.jpg'],
+        'smartphones-tablets' => ['images/categories/smartphones-tablets-1.jpg', 'images/categories/smartphones-tablets-2.jpg', 'images/categories/smartphones-tablets-3.jpg', 'images/categories/smartphones-tablets-4.jpg', 'images/categories/smartphones-tablets-5.jpg'],
+        'headphones-audio' => ['images/categories/headphones-audio-1.jpg', 'images/categories/headphones-audio-2.jpg', 'images/categories/headphones-audio-3.jpg', 'images/categories/headphones-audio-4.jpg', 'images/categories/headphones-audio-5.jpg'],
+        'cables-adapters' => ['images/categories/cables-adapters-1.jpg', 'images/categories/cables-adapters-2.jpg', 'images/categories/cables-adapters-3.jpg', 'images/categories/cables-adapters-4.jpg', 'images/categories/cables-adapters-5.jpg'],
+        'chargers-power' => ['images/categories/chargers-power-1.jpg', 'images/categories/chargers-power-2.jpg', 'images/categories/chargers-power-3.jpg', 'images/categories/chargers-power-4.jpg', 'images/categories/chargers-power-5.jpg'],
+        'keyboards-mice' => ['images/categories/keyboards-mice-1.jpg', 'images/categories/keyboards-mice-2.jpg', 'images/categories/keyboards-mice-3.jpg', 'images/categories/keyboards-mice-4.jpg', 'images/categories/keyboards-mice-5.jpg'],
+        'monitors-displays' => ['images/categories/monitors-displays-1.jpg', 'images/categories/monitors-displays-2.jpg', 'images/categories/monitors-displays-3.jpg', 'images/categories/monitors-displays-4.jpg', 'images/categories/monitors-displays-5.jpg'],
+        'storage-drives' => ['images/categories/storage-drives-1.jpg', 'images/categories/storage-drives-2.jpg', 'images/categories/storage-drives-3.jpg', 'images/categories/storage-drives-4.jpg', 'images/categories/storage-drives-5.jpg'],
+        'smart-home' => ['images/categories/smart-home-1.jpg', 'images/categories/smart-home-2.jpg', 'images/categories/smart-home-3.jpg', 'images/categories/smart-home-4.jpg', 'images/categories/smart-home-5.jpg'],
+        'wearables' => ['images/categories/wearables-1.jpg', 'images/categories/wearables-2.jpg', 'images/categories/wearables-3.jpg', 'images/categories/wearables-4.jpg', 'images/categories/wearables-5.jpg'],
+        'gaming' => ['images/categories/gaming-1.jpg', 'images/categories/gaming-2.jpg', 'images/categories/gaming-3.jpg', 'images/categories/gaming-4.jpg', 'images/categories/gaming-5.jpg'],
+        'networking' => ['images/categories/networking-1.jpg', 'images/categories/networking-2.jpg', 'images/categories/networking-3.jpg', 'images/categories/networking-4.jpg', 'images/categories/networking-5.jpg'],
+    ];
+
     public function run(): void
     {
         Product::query()->delete();
@@ -115,9 +130,15 @@ class ProductSeeder extends Seeder
         $total = 0;
         foreach (self::PRODUCTS as $slug => $products) {
             $categoryId = $categories[$slug] ?? null;
-            if (!$categoryId) continue;
+            if (! $categoryId) {
+                continue;
+            }
 
-            foreach ($products as $data) {
+            $imagePaths = self::CATEGORY_IMAGES[$slug];
+
+            foreach ($products as $index => $data) {
+                $imagePath = $imagePaths[$index % count($imagePaths)];
+                $alternateImagePath = $imagePaths[($index + 1) % count($imagePaths)];
                 $prodSlug = Str::slug($data['name']);
                 Product::create([
                     'name' => $data['name'],
@@ -125,11 +146,8 @@ class ProductSeeder extends Seeder
                     'description' => "Premium {$data['name']} — engineered for performance and reliability. Perfect for everyday use, this item combines cutting-edge technology with sleek design. Order now and experience the FiberRoad difference.",
                     'price' => $data['price'],
                     'original_price' => $data['original_price'] ?? null,
-                    'image' => 'https://picsum.photos/seed/prod-' . $prodSlug . '/640/480',
-                    'images' => json_encode([
-                        'https://picsum.photos/seed/prod-' . $prodSlug . '-1/640/480',
-                        'https://picsum.photos/seed/prod-' . $prodSlug . '-2/640/480',
-                    ]),
+                    'image' => $imagePath,
+                    'images' => [$imagePath, $alternateImagePath],
                     'category_id' => $categoryId,
                     'is_active' => true,
                     'featured' => $data['featured'] ?? false,

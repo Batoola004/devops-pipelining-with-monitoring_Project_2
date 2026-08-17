@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -71,20 +72,47 @@ class Product extends Model
 
     public function getImageUrlAttribute()
     {
-        if ($this->image) {
-            return asset('storage/' . $this->image);
-        }
-        return null;
+        return $this->resolveImageUrl($this->image);
     }
 
     public function getImagesUrlsAttribute()
     {
-        $imgs = $this->images;
-        if (is_array($imgs)) return $imgs;
-        if (is_string($imgs)) {
-            $decoded = json_decode($imgs, true);
-            return is_array($decoded) ? $decoded : [$imgs];
+        $images = $this->images;
+
+        if (is_string($images)) {
+            $decoded = json_decode($images, true);
+            $images = is_array($decoded) ? $decoded : [$images];
         }
-        return [];
+
+        if (! is_array($images)) {
+            return [];
+        }
+
+        return collect($images)
+            ->map(fn ($image) => $this->resolveImageUrl($image))
+            ->filter()
+            ->values()
+            ->all();
+    }
+
+    /**
+     * Resolve either an external URL, a versioned public asset, or a Laravel
+     * storage path without accidentally prefixing an external URL with /storage.
+     */
+    protected function resolveImageUrl(?string $image): ?string
+    {
+        if (blank($image)) {
+            return null;
+        }
+
+        if (Str::startsWith($image, ['http://', 'https://', '//'])) {
+            return $image;
+        }
+
+        if (Str::startsWith($image, 'images/')) {
+            return '/' . ltrim($image, '/');
+        }
+
+        return '/storage/' . ltrim($image, '/');
     }
 }
