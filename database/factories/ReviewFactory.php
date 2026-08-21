@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ReviewFactory extends Factory
 {
+
+    //testing pipline 
     protected $model = Review::class;
 
     public function definition(): array
@@ -25,11 +27,11 @@ class ReviewFactory extends Factory
 
     public function approved(): static
     {
-        return $this->state(fn () => ['is_approved' => true]);
+        return $this->state(fn() => ['is_approved' => true]);
     }
 
     public function unapproved(): static
     {
-        return $this->state(fn () => ['is_approved' => false]);
+        return $this->state(fn() => ['is_approved' => false]);
     }
 }
